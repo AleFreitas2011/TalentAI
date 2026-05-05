@@ -12,6 +12,7 @@ import re
 
 from .db import SessionLocal, engine, Base
 from .models import Vaga, Usuario, Cliente, Candidato, Envio
+import os
 
 from app.services.cv_parser import extrair_texto_cv
 from app.services.email_extractor import extrair_email
@@ -114,13 +115,13 @@ def detalhe_vaga(
     candidatos = sorted(candidatos, key=lambda x: x.score or 0, reverse=True)
 
     return templates.TemplateResponse(
-        "vaga_detalhe.html",
-        {
-            "request": request,
-            "vaga": vaga,
-            "candidatos": candidatos
-        }
-    )
+    "vaga_detalhe.html",
+    {
+        "request": request,
+        "vaga": vaga,
+        "candidatos": []
+    }
+)
 
 @app.get("/nova_vaga", response_class=HTMLResponse)
 def tela_nova_vaga(request: Request, db: Session = Depends(get_db)):
