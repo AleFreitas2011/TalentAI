@@ -74,9 +74,24 @@ def logout(request: Request):
 # =========================
 # 🏠 HOME
 # =========================
+# =========================
+# 🏠 HOME
+# =========================
 @app.get("/", response_class=HTMLResponse)
-def home(request: Request):
-    return HTMLResponse("<h1>OK</h1>")
+def home(request: Request, db: Session = Depends(get_db)):
+
+    print("🔥 HOME CARREGANDO")
+
+    try:
+        vagas = db.query(Vaga).all()
+    except Exception as e:
+        print("❌ ERRO AO BUSCAR VAGAS:", e)
+        vagas = []
+
+    return templates.TemplateResponse("vagas.html", {
+        "request": request,
+        "vagas": vagas
+    })
     
 # =========================
 # 📄 DETALHE DA VAGA (COM AUTO-RESUMO)
