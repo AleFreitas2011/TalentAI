@@ -10,7 +10,6 @@ import json
 import urllib.parse
 import re
 
-from app.db import get_db
 from .db import SessionLocal, engine, Base
 from .models import Vaga, Usuario, Cliente, Candidato, Envio
 
@@ -27,7 +26,7 @@ from app.services.email_sender import enviar_email
 # =========================
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key="talentai-secret-key")
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="app/templates")
 Base.metadata.create_all(bind=engine)
 
 # =========================
