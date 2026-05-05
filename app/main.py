@@ -20,6 +20,7 @@ from app.services.match import calcular_match
 from app.services.ai_match import analisar_cv_com_ia
 from app.services.email_sender import enviar_email
 
+print("🔥 CODIGO NOVO RODANDO 🔥")
 
 # =========================
 # 🚀 APP
