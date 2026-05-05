@@ -1,0 +1,84 @@
+{% extends "base.html" %} {% block content %}
+
+<h1>📤 Enviar candidatos</h1>
+
+<h3>Vaga: {{ vaga.titulo }}</h3>
+
+<br>
+
+<form method="post" action="/enviar_cliente/{{ vaga.id }}"></form>
+
+<!-- CLIENTE -->
+<label>Cliente:</label>
+<select name="cliente_id" required>
+        {% for c in clientes %}
+            <option value="{{ c.id }}">
+                {{ c.nome_contato }} - {{ c.email }}
+            </option>
+        {% endfor %}
+    </select>
+
+<br><br>
+
+<!-- 🔥 IDIOMA (FORA DO LOOP - CORRETO) -->
+<label><b>Idioma do email:</b></label><br>
+<select name="idioma" style="
+        padding:6px;
+        border-radius:6px;
+        border:1px solid #ccc;
+    ">
+        <option value="EN">English</option>
+        <option value="PT">Português</option>
+    </select>
+
+<br><br>
+
+<!-- CANDIDATOS -->
+<h3>Candidatos</h3>
+
+{% for c in candidatos %}
+<div style="
+        border:1px solid #e5e7eb;
+        padding:10px;
+        border-radius:8px;
+        margin-bottom:10px;
+    ">
+
+    <!-- CHECKBOX -->
+    <input type="checkbox" name="candidatos_ids" value="{{ c.id }}">
+
+    <!-- NOME + SCORE -->
+    <b>{{ c.nome_arquivo }}</b> — {{ c.score }}%
+
+    <br><br>
+
+    <!-- 💰 TAXA -->
+    <label>💰 Taxa (R$/h):</label>
+    <input type="text" name="taxa_{{ c.id }}" placeholder="Ex: 120" style="
+            width:100px;
+            padding:5px;
+            border-radius:6px;
+            border:1px solid #ccc;
+        ">
+
+</div>
+{% endfor %}
+
+<br>
+
+<!-- BOTÃO -->
+<button type="submit" style="
+        background:#2563eb;
+        color:white;
+        padding:10px 20px;
+        border:none;
+        border-radius:6px;
+        cursor:pointer;
+        font-weight:bold;
+    ">
+        Gerar email
+    </button>
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %} {% block content %}
+
+<h1>🏆 Ranking de Candidatos</h1>
+
+<br>
+
+<h3>💼 Vaga: {{ vaga.titulo }}</h3>
+
+<br><br> {% if resultados %} {% for c in resultados %}
+
+<div style="
+        background:#f9fafb;
+        padding:20px;
+        border-radius:12px;
+        margin-bottom:15px;
+        border-left:6px solid #6366f1;
+        box-shadow:0 6px 15px rgba(0,0,0,0.05);
+    ">
+
+    <h3 style="margin-bottom:5px;">
+        👤 {{ c.nome }}
+    </h3>
+
+    <p style="font-weight:bold; color:#111827;">
+        📊 Score: {{ c.score }}%
+    </p>
+
+    <p style="color:#374151;">
+        🧠 {{ c.resumo }}
+    </p>
+
+</div>
+
+{% endfor %} {% else %}
+
+<p>Nenhum candidato analisado.</p>
+
+{% endif %}
+
+<br><br>
+
+<a href="/" style="
+    color:#4f46e5;
+    text-decoration:none;
+">
+    ⬅ Voltar
+</a> {% endblock %}

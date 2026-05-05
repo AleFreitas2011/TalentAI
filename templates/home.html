@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Home - TalentAI</title>
+</head>
+
+<body>
+
+    <h1>Bem-vinda ao TalentAI 😈</h1>
+
+    <div style="display:flex;gap:20px;margin-bottom:20px;">
+
+        <div style="background:white;padding:20px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <h3>📌 Vagas</h3>
+            <p style="font-size:24px;font-weight:bold;">
+                {{ vagas|length }}
+            </p>
+        </div>
+
+        <div style="background:white;padding:20px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <h3>👤 Candidatos</h3>
+            <p style="font-size:24px;font-weight:bold;">
+                --
+            </p>
+        </div>
+
+        <div style="background:white;padding:20px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <h3>📊 Match médio</h3>
+            <p style="font-size:24px;font-weight:bold;">
+                --
+            </p>
+        </div>
+
+    </div>
+
+    <h3>Suas vagas:</h3>
+
+    {% if vagas %}
+    <ul>
+        {% for vaga in vagas %}
+        <li>
+            {{ vaga.titulo or "Sem título" }} - {{ vaga.cliente or "Sem cliente" }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>🚫 Nenhuma vaga cadastrada ainda</p>
+    {% endif %}
+
+    <hr>
+
+    <h3>Nova vaga</h3>
+
+    <form action="/nova_vaga" method="post">
+        <input type="text" name="titulo" placeholder="Título" required>
+        <br><br>
+
+        <input type="text" name="cliente" placeholder="Cliente" required>
+        <br><br>
+
+        <textarea name="descricao" placeholder="Descrição"></textarea>
+        <br><br>
+
+        <button type="submit">Criar vaga</button>
+    </form>
+
+    <br><br>
+
+    <a href="/logout">Sair</a>
+
+</body>
+
+</html>

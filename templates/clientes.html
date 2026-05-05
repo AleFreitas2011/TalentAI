@@ -1,0 +1,97 @@
+{% extends "base.html" %} {% block content %}
+
+<h1 style="margin-bottom:20px;">🏢 Clientes</h1>
+
+<!-- FORM -->
+<div style="
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    border:1px solid #e5e7eb;
+    margin-bottom:30px;
+">
+    <form method="post" action="/clientes">
+
+        <input type="text" name="nome_contato" placeholder="Nome do contato" required style="
+            padding:10px;
+            border:1px solid #e5e7eb;
+            border-radius:8px;
+            margin-right:10px;
+        ">
+
+        <input type="email" name="email" placeholder="Email" required style="
+            padding:10px;
+            border:1px solid #e5e7eb;
+            border-radius:8px;
+            margin-right:10px;
+        ">
+
+        <input type="text" name="empresa" placeholder="Empresa" style="
+            padding:10px;
+            border:1px solid #e5e7eb;
+            border-radius:8px;
+            margin-right:10px;
+        ">
+
+        <button type="submit" style="
+            background:#4f46e5;
+            color:white;
+            padding:10px 15px;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+        ">
+            ➕ Salvar cliente
+        </button>
+
+    </form>
+</div>
+
+<!-- LISTA -->
+<h3 style="margin-bottom:15px;">Lista de clientes</h3>
+
+<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
+
+    {% for c in clientes %}
+    <div style="
+    background:#f9fafb;
+    padding:20px;
+    border-radius:12px;
+    border-left:6px solid #6366f1;
+    box-shadow:0 6px 18px rgba(0,0,0,0.05);
+">
+
+        <!-- NOME -->
+        <div style="font-weight:bold; font-size:16px; color:#111827;">
+            👤 {{ c.nome_contato }}
+        </div>
+
+        <!-- EMAIL -->
+        <div style="color:#374151; font-size:14px; margin-top:6px;">
+            📧 {{ c.email }}
+        </div>
+
+        <!-- EMPRESA -->
+        {% if c.empresa %}
+        <div style="color:#6b7280; font-size:13px; margin-top:4px;">
+            🏢 {{ c.empresa }}
+        </div>
+        {% endif %}
+
+        <!-- 🔥 BOTÃO VER VAGAS -->
+        <a href="/vagas/cliente/{{ c.id }}" style="
+        display:inline-block;
+        margin-top:12px;
+        background:#4f46e5;
+        color:white;
+        padding:8px 12px;
+        border-radius:8px;
+        text-decoration:none;
+        font-size:13px;
+    ">
+        👁 Ver vagas
+    </a>
+
+    </div>
+    {% endfor %}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>TalentAI</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+        }
+        /* 🔥 TOPO */
+        
+        .topbar {
+            background: linear-gradient(90deg, #4f46e5, #6366f1);
+            color: white;
+            padding: 15px 30px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        /* 💎 MENU */
+        
+        .menu {
+            background: #ffffff;
+            padding: 12px 30px;
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        /* 🔥 BOTÕES MENU */
+        
+        .menu-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            color: #374151;
+            background: #f3f4f6;
+            transition: all 0.2s ease;
+        }
+        
+        .menu-btn:hover {
+            background: #e5e7eb;
+        }
+        
+        .menu-btn.active {
+            background: #10b981;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .menu-btn.primary {
+            background: #2563eb;
+            color: white;
+            font-weight: 600;
+        }
+        /* 📦 CONTAINER */
+        
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+        /* 🔘 BOTÕES */
+        
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: #1d4ed8;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- 🔥 TOPO -->
+    <div class="topbar">
+        TalentAI — Smart Hiring
+    </div>
+
+    <!-- 💎 MENU (ÚNICO E CORRETO) -->
+    <div class="menu">
+
+        <a href="/" class="menu-btn">Painel</a>
+        <a href="/dashboard" class="menu-btn">Dashboard</a>
+        <a href="/banco_talentos" class="menu-btn">Talentos</a>
+        <a href="/buscar_talentos" class="menu-btn">Buscar</a>
+        <a href="/historico_envios" class="menu-btn active">Histórico</a>
+        <a href="/novo_cliente" class="menu-btn primary">+ Cliente</a>
+
+    </div>
+
+    <!-- 📦 CONTEÚDO -->
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- 🔻 RODAPÉ -->
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 30px;">
+
+        <div style="font-weight:bold;font-size:20px;">
+            TalentAI 🚀
+        </div>
+
+        <div>
+            <span style="margin-right:15px;">
+                👤 {{ request.session.get("user_email") }}
+            </span>
+
+            <a href="/logout" style="
+                background:#ef4444;
+                color:white;
+                padding:6px 12px;
+                border-radius:6px;
+                text-decoration:none;
+            ">
+                Sair
+            </a>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

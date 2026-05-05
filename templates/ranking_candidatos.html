@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Ranking de Candidatos</title>
+
+    ```
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+        
+        h1 {
+            color: #1f2937;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+        
+        th {
+            background: #2563eb;
+            color: white;
+            padding: 12px;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+        
+        tr:hover {
+            background: #f1f5f9;
+        }
+        
+        .alto {
+            color: green;
+            font-weight: bold;
+        }
+        
+        .medio {
+            color: orange;
+            font-weight: bold;
+        }
+        
+        .baixo {
+            color: red;
+            font-weight: bold;
+        }
+        
+        .skills {
+            font-size: 13px;
+            color: #374151;
+        }
+        
+        .skill-tag {
+            display: inline-block;
+            background: #e5e7eb;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin: 2px;
+        }
+        
+        .voltar {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 16px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+    ```
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        ```
+        <h1>Ranking de Candidatos</h1>
+
+        <p><strong>Vaga:</strong> {{ vaga.titulo }}</p>
+
+        <table>
+
+            <tr>
+                <th>Posição</th>
+                <th>Candidato</th>
+                <th>Match</th>
+                <th>Skills Encontradas</th>
+            </tr>
+
+            {% for candidato in ranking %}
+
+            <tr>
+
+                <td>
+                    {% if loop.index == 1 %} 🥇 {% elif loop.index == 2 %} 🥈 {% elif loop.index == 3 %} 🥉 {% else %} {{ loop.index }} {% endif %}
+                </td>
+
+                <td>{{ candidato.nome }}</td>
+
+                <td>
+
+                    {% if candidato.score >= 85 %}
+                    <span class="alto">{{ candidato.score }}%</span> {% elif candidato.score >= 70 %}
+                    <span class="medio">{{ candidato.score }}%</span> {% else %}
+                    <span class="baixo">{{ candidato.score }}%</span> {% endif %}
+
+                </td>
+
+                <td class="skills">
+                    {% for skill in candidato.skills %}
+                    <span class="skill-tag">{{ skill }}</span> {% endfor %}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        <a class="voltar" href="/">Voltar ao painel</a> ```
+
+    </div>
+
+</body>
+
+</html>

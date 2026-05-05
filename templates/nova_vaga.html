@@ -1,0 +1,101 @@
+{% extends "base.html" %} {% block content %}
+
+<div style="max-width:700px;margin:auto;">
+
+    <h1 style="
+        background: linear-gradient(90deg, #2563eb, #7c3aed);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom:20px;
+    ">
+        Nova Vaga
+    </h1>
+
+    <div style="
+        background:white;
+        padding:25px;
+        border-radius:12px;
+        box-shadow:0 8px 25px rgba(0,0,0,0.05);
+    ">
+
+        <form action="/nova_vaga" method="post">
+
+            <!-- CLIENTE -->
+            <label style="font-weight:bold;color:#374151;">Cliente</label>
+
+            <select name="cliente_id" required style="
+                width:100%;
+                padding:10px;
+                margin-top:5px;
+                margin-bottom:15px;
+                border:1px solid #e5e7eb;
+                    border-radius:8px;
+    ">  
+            <option value="">Selecione um cliente</option>
+
+                {% for c in clientes %}
+            <option value="{{ c.id }}">
+                  {{ c.nome_contato }}
+            </option>
+            {% endfor %}
+            </select>
+
+            <!-- TÍTULO -->
+            <label style="font-weight:bold;color:#374151;">Título da vaga</label>
+            <input type="text" name="titulo" required style="width:100%;padding:10px;margin-top:5px;margin-bottom:15px;border:1px solid #e5e7eb;border-radius:8px;">
+
+            <!-- DESCRIÇÃO -->
+            <label style="font-weight:bold;color:#374151;">Descrição</label>
+            <textarea name="descricao" rows="6" style="width:100%;padding:10px;margin-top:5px;margin-bottom:15px;border:1px solid #e5e7eb;border-radius:8px;"></textarea>
+
+            <!-- 🔥 PALAVRAS-CHAVE INTELIGENTE -->
+            <label style="font-weight:bold;color:#374151;">Palavras-chave</label>
+
+            <input type="text" name="palavras_chave" placeholder="Ex: sap sd*, s4hana*, otc, ingles" style="width:100%;padding:10px;margin-top:5px;border:1px solid #e5e7eb;border-radius:8px;">
+
+            <!-- 💡 DICA UX -->
+            <p style="font-size:13px;color:#6b7280;margin-top:6px;margin-bottom:15px;">
+                💡 Use <b>*</b> para habilidades obrigatórias.<br> Ex: <i>sap sd*, s4hana*, otc, ingles</i><br> 👉 Skills com * têm mais peso no match.
+            </p>
+
+            <!-- STATUS -->
+            <label style="font-weight:bold;color:#374151;">Status</label>
+            <select name="status" style="width:100%;padding:10px;margin-top:5px;margin-bottom:20px;border:1px solid #e5e7eb;border-radius:8px;">
+                <option value="Aberta">Aberta</option>
+                <option value="Finalizada">Finalizada</option>
+            </select>
+
+            <!-- BOTÕES -->
+            <div style="display:flex;gap:10px;">
+
+                <button type="submit" style="
+                    background: linear-gradient(90deg, #2563eb, #7c3aed);
+                    color:white;
+                    border:none;
+                    padding:12px 20px;
+                    border-radius:10px;
+                    cursor:pointer;
+                    font-weight:bold;
+                ">
+                    💾 Salvar vaga
+                </button>
+
+                <a href="/" style="
+                    background:#f3f4f6;
+                    color:#374151;
+                    padding:12px 20px;
+                    border-radius:10px;
+                    text-decoration:none;
+                ">
+                    Voltar
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

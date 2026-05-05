@@ -1,0 +1,54 @@
+{% extends "base.html" %} {% block content %}
+
+<h1 style="margin-bottom:20px;">📜 Histórico de Envios</h1>
+
+{% for e in envios %}
+<div style="
+    background:#f3f4f6;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    border-left:6px solid #10b981;
+">
+
+    <!-- 🚀 VAGA -->
+    <div style="
+        font-weight:bold;
+        font-size:18px;
+        color:#111827;
+        margin-bottom:6px;
+    ">
+        🚀 {{ e.vaga }}
+    </div>
+
+    <!-- 👤 CLIENTE -->
+    <div style="
+        color:#374151;
+        font-size:14px;
+        margin-bottom:10px;
+    ">
+        Cliente: <b>{{ e.cliente }}</b>
+    </div>
+
+    <!-- 📅 DATA -->
+    <div style="
+        font-size:13px;
+        color:#6b7280;
+        margin-bottom:12px;
+    ">
+        📅 {{ e.data }}
+    </div>
+
+    <!-- 👥 CANDIDATOS -->
+    <div style="
+        font-size:14px;
+        background:white;
+        padding:12px;
+        border-radius:8px;
+    ">
+        <b>👥 Candidatos enviados:</b><br> {{ e.candidatos }}
+    </div>
+
+</div>
+{% endfor %} {% endblock %}

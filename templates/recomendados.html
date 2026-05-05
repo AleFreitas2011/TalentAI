@@ -1,0 +1,44 @@
+{% extends "base.html" %} {% block content %}
+
+<h1>🤖 Candidatos recomendados</h1>
+
+<p><strong>Vaga:</strong> {{ vaga.titulo }}</p>
+
+<br> {% if candidatos %}
+
+<table>
+
+    <tr>
+        <th>#</th>
+        <th>Candidato</th>
+        <th>Match</th>
+        <th>Skills encontradas</th>
+    </tr>
+
+    {% for c in candidatos %}
+
+    <tr>
+
+        <td>{{ loop.index }}</td>
+
+        <td>{{ c.nome_arquivo }}</td>
+
+        <td><b>{{ c.match }}%</b></td>
+
+        <td>{{ c.skills_extraidas }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% else %}
+
+<p>Nenhum candidato encontrado.</p>
+
+{% endif %}
+
+<br><br>
+
+<a href="/vaga/{{ vaga.id }}">← Voltar para vaga</a> {% endblock %}

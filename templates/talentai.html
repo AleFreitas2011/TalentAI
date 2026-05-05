@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>TalentAI</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: white;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 40px;
+        }
+        
+        h1 {
+            font-size: 40px;
+        }
+        
+        .card {
+            background: #111827;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 180px;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 20px;
+        }
+        
+        input {
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: #38bdf8;
+            border: none;
+            padding: 14px 22px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        
+        .result {
+            background: #1e293b;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>TalentAI</h1>
+
+        <p>AI that finds the best tech talent for you</p>
+
+        <div class="card">
+
+            <label>Job Description</label>
+
+            <textarea placeholder="Paste the job description here..."></textarea>
+
+            <label>Upload CVs</label>
+
+            <input type="file" multiple>
+
+            <br>
+
+            <button>Analyze Candidates</button>
+
+            <div class="result">
+
+                <h3>Example Result</h3>
+
+                <p>Top requirements detected:</p>
+
+                <ul>
+                    <li>Python</li>
+                    <li>FastAPI</li>
+                    <li>AWS</li>
+                    <li>English</li>
+                    <li>Senior</li>
+                </ul>
+
+                <p><strong>Top candidates:</strong></p>
+
+                <p>
+                    1️⃣ Maria Silva — 92% match<br> 2️⃣ João Santos — 87% match<br> 3️⃣ Pedro Lima — 81% match
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

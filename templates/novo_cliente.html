@@ -1,0 +1,78 @@
+{% extends "base.html" %} {% block content %}
+
+<div style="max-width:500px;margin:auto;">
+
+    <h1 style="
+        background: linear-gradient(90deg, #2563eb, #7c3aed);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom:20px;
+    ">
+        👤 Novo Cliente
+    </h1>
+
+    <div style="
+        background:white;
+        padding:25px;
+        border-radius:12px;
+        box-shadow:0 8px 25px rgba(0,0,0,0.05);
+    ">
+
+        <!-- 🔥 FORM CORRETO -->
+        <form method="post" action="/novo_cliente">
+
+            <label style="font-weight:bold;color:#374151;">
+                Nome do contato
+            </label>
+            <input type="text" name="nome_contato" required style="
+                width:100%;
+                padding:10px;
+                margin-top:5px;
+                margin-bottom:15px;
+                border:1px solid #e5e7eb;
+                border-radius:8px;
+            ">
+
+            <label style="font-weight:bold;color:#374151;">
+                Email
+            </label>
+            <input type="email" name="email" required style="
+                width:100%;
+                padding:10px;
+                margin-top:5px;
+                margin-bottom:15px;
+                border:1px solid #e5e7eb;
+                border-radius:8px;
+            ">
+
+            <label style="font-weight:bold;color:#374151;">
+                Empresa
+            </label>
+            <input type="text" name="empresa" style="
+                width:100%;
+                padding:10px;
+                margin-top:5px;
+                margin-bottom:20px;
+                border:1px solid #e5e7eb;
+                border-radius:8px;
+            ">
+
+            <button type="submit" style="
+                background: linear-gradient(90deg, #2563eb, #7c3aed);
+                color:white;
+                border:none;
+                padding:12px 20px;
+                border-radius:10px;
+                cursor:pointer;
+                font-weight:bold;
+            ">
+                💾 Salvar Cliente
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
