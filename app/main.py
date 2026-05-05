@@ -28,7 +28,11 @@ print("🔥 CODIGO NOVO RODANDO 🔥")
 # =========================
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key="talentai-secret-key")
-templates = Jinja2Templates(directory="app/templates")
+
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 # Base.metadata.create_all(bind=engine)
 
