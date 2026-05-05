@@ -26,7 +26,7 @@ from app.services.email_sender import enviar_email
 # =========================
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key="talentai-secret-key")
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory="templates")
 Base.metadata.create_all(bind=engine)
 
 # =========================
