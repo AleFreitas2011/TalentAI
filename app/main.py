@@ -72,15 +72,11 @@ def logout(request: Request):
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request, db: Session = Depends(get_db)):
 
-    try:
-        vagas = db.query(Vaga).all()
-    except Exception as e:
-        print("🔥 ERRO BANCO:", e)
-        vagas = []
+    print("🔥 TESTE HOME")
 
     return templates.TemplateResponse("vagas.html", {
         "request": request,
-        "vagas": vagas
+        "vagas": []
     })
     
 # =========================
