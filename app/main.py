@@ -71,11 +71,14 @@ def logout(request: Request):
 # =========================
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request, db: Session = Depends(get_db)):
+
+    vagas = db.query(Vaga).all()
+
     return templates.TemplateResponse("vagas.html", {
         "request": request,
-        "vagas": []
+        "vagas": vagas
     })
-
+    
 # =========================
 # 📄 DETALHE DA VAGA (COM AUTO-RESUMO)
 # =========================
