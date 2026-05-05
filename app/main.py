@@ -70,14 +70,8 @@ def logout(request: Request):
 # 🏠 HOME
 # =========================
 @app.get("/", response_class=HTMLResponse)
-def home(request: Request, db: Session = Depends(get_db)):
-
-    print("🔥 TESTE HOME")
-
-    return templates.TemplateResponse("vagas.html", {
-        "request": request,
-        "vagas": []
-    })
+def home(request: Request):
+    return HTMLResponse("<h1>OK</h1>")
     
 # =========================
 # 📄 DETALHE DA VAGA (COM AUTO-RESUMO)
