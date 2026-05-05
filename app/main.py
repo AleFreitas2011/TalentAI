@@ -661,6 +661,6 @@ def buscar_talentos(request: Request, q: str = "", db: Session = Depends(get_db)
         "q": q
     })
     
-    @app.get("/teste")
-def teste():
+@app.get("/health")
+def health():
     return {"status": "ok"}
