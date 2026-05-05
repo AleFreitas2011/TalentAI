@@ -68,7 +68,7 @@ def logout(request: Request):
 # 🏠 HOME
 # =========================
 @app.get("/", response_class=HTMLResponse)
-def home(request: Request):
+def home(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse("vagas.html", {
         "request": request,
         "vagas": []
