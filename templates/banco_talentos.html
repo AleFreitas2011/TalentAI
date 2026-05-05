@@ -1,0 +1,98 @@
+{% extends "base.html" %} {% block content %}
+
+<h1 style="
+    background: linear-gradient(90deg, #2563eb, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+">
+    Banco de Talentos 💎
+</h1>
+
+<br>
+
+<form action="/upload_cv_banco" method="post" enctype="multipart/form-data">
+
+    <input type="file" name="cvs" multiple accept=".pdf,.docx">
+
+    <select name="idioma">
+        <option value="PT">Português</option>
+        <option value="EN">Inglês</option>
+    </select>
+
+    <button type="submit" style="
+        background:#2563eb;
+        color:white;
+        padding:8px 14px;
+        border:none;
+        border-radius:6px;
+        cursor:pointer;
+    ">
+        + Adicionar CV
+    </button>
+
+</form>
+
+<br><br> {% if candidatos %} {% for c in candidatos %}
+
+<div style="
+        background:white;
+        padding:20px;
+        border-radius:12px;
+        margin-bottom:15px;
+        box-shadow:0 6px 18px rgba(0,0,0,0.05);
+    ">
+
+    <h3 style="margin-bottom:5px;">
+        {{ c.nome_arquivo }}
+    </h3>
+
+    <p style="color:#6b7280;">
+        📧 {{ c.email or "Email não encontrado" }}
+    </p>
+
+    <p style="color:#6b7280;">
+        📱 {{ c.telefone or "Telefone não encontrado" }}
+    </p>
+
+    <!-- 🔥 BOTÃO WHATSAPP -->
+    {% if c.telefone %}
+    <a href="https://wa.me/{{ c.telefone }}?text=Oi%20vi%20seu%20perfil%20e%20tenho%20uma%20oportunidade%20pra%20você" target="_blank" style="
+            display:inline-block;
+            margin-top:10px;
+            background:#25D366;
+            color:white;
+            padding:8px 12px;
+            border-radius:6px;
+            text-decoration:none;
+            font-size:14px;
+           ">
+            📲 Falar no WhatsApp
+        </a> {% endif %}
+
+    <p style="
+            font-weight:bold;
+            color:#2563eb;
+            font-size:18px;
+            margin-top:10px;
+        ">
+        📊 {{ c.score if c.score else "0" }}%
+    </p>
+
+    <p style="
+            color:#374151;
+            font-size:14px;
+        ">
+        🧠 {{ c.skills_extraidas or "Skills não identificadas" }}
+    </p>
+
+</div>
+
+{% endfor %} {% else %}
+
+<p>Nenhum talento encontrado.</p>
+
+{% endif %}
+
+<br>
+
+<a href="/" style="text-decoration:none;">← Voltar</a> {% endblock %}

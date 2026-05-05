@@ -1,0 +1,50 @@
+{% extends "base.html" %} {% block content %}
+
+<h1>📊 TalentAI Dashboard</h1>
+
+<br>
+
+<div style="display:flex;gap:20px;flex-wrap:wrap;">
+
+    <div style="flex:1;background:#2563eb;color:white;padding:25px;border-radius:10px;">
+        <h2>{{ vagas_abertas }}</h2>
+        <p>Vagas abertas</p>
+    </div>
+
+    <div style="flex:1;background:#16a34a;color:white;padding:25px;border-radius:10px;">
+        <h2>{{ total_candidatos }}</h2>
+        <p>Candidatos analisados</p>
+    </div>
+
+    <div style="flex:1;background:#f59e0b;color:white;padding:25px;border-radius:10px;">
+        <h2>{{ media_match }}%</h2>
+        <p>Match médio</p>
+    </div>
+
+</div>
+
+
+
+<br><br>
+
+<h3>🔥 TalentAI Insights</h3>
+
+<ul>
+    <li>Total de vagas ativas no sistema</li>
+    <li>Total de candidatos já analisados</li>
+    <li>Qualidade média de match entre vagas e talentos</li>
+</ul>
+
+<div style="display:flex;gap:20px;margin-top:20px;">
+
+    <div style="background:#6366f1;color:white;padding:15px;border-radius:10px;">
+        🔥 Vagas Ativas: {{ vagas_ativas }}
+    </div>
+
+    <div style="background:#ef4444;color:white;padding:15px;border-radius:10px;">
+        🛑 Vagas Finalizadas: {{ vagas_finalizadas }}
+    </div>
+
+</div>
+
+{% endblock %}

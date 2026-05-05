@@ -1,0 +1,33 @@
+<h1>Editar Vaga</h1>
+
+<form method="post" action="/editar_vaga/{{ vaga.id }}">
+
+    <p>
+        <input type="text" name="cliente" value="{{ vaga.cliente }}" required />
+    </p>
+
+    <p>
+        <label>Título da vaga:</label><br />
+        <input type="text" name="titulo" value="{{ vaga.titulo }}" required />
+    </p>
+
+    <!-- COLE AQUI 👇 -->
+
+    <p>
+        <label>Descrição:</label><br />
+        <textarea name="descricao" rows="10" style="width:100%;">{{ vaga.descricao }}</textarea>
+        <!-- ATÉ AQUI 👆 -->
+
+        <p>
+            <label>Status:</label><br />
+            <select name="status" required>
+<option value="Ativa" {% if vaga.status == "Ativa" %}selected{% endif %}>Ativa</option>
+<option value="Em processo" {% if vaga.status == "Em processo" %}selected{% endif %}>Em processo</option>
+<option value="Finalizada" {% if vaga.status == "Finalizada" %}selected{% endif %}>Finalizada</option>
+</select>
+        </p>
+
+        <button type="submit">Salvar vaga</button>
+</form>
+
+<p><a href="/">Voltar para o painel</a></p>

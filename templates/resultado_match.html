@@ -1,0 +1,59 @@
+{% extends "base.html" %} {% block content %}
+
+<h1 style="margin-bottom:20px;">🏆 Ranking de Candidatos</h1>
+
+<p style="margin-bottom:20px;">
+    <b>Vaga:</b> {{ vaga.titulo }}
+</p>
+
+{% if resultados %} {% for c in resultados %}
+
+<div style="
+        background:white;
+        padding:20px;
+        border-radius:12px;
+        margin-bottom:20px;
+        box-shadow:0 8px 25px rgba(0,0,0,0.08);
+        border-left:6px solid {% if loop.index == 1 %}#10b981{% else %}#6366f1{% endif %};
+    ">
+
+    <!-- 🏆 TOP 1 -->
+    {% if loop.index == 1 %}
+    <div style="color:#10b981; font-weight:bold; margin-bottom:8px;">
+        🏆 MELHOR CANDIDATO
+    </div>
+    {% endif %}
+
+    <!-- NOME -->
+    <div style="font-size:18px; font-weight:bold; color:#111827;">
+        👤 {{ c.nome }}
+    </div>
+
+    <!-- SCORE -->
+    <div style="margin-top:6px;">
+        📊 <b>{{ c.score }}%</b>
+    </div>
+
+    <!-- RESUMO -->
+    <div style="
+            margin-top:10px;
+            color:#374151;
+            font-size:14px;
+        ">
+        🧠 {{ c.resumo }}
+    </div>
+
+</div>
+
+{% endfor %} {% else %}
+<p>Nenhum candidato analisado.</p>
+{% endif %}
+
+<br>
+
+<a href="/vaga/{{ vaga.id }}" style="
+    color:#4f46e5;
+    text-decoration:none;
+">
+    ⬅ Voltar para vaga
+</a> {% endblock %}
