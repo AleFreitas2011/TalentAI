@@ -75,24 +75,67 @@ def logout(request: Request):
 # =========================
 # 🏠 HOME
 # =========================
+from fastapi.responses import HTMLResponse
+
 @app.get("/", response_class=HTMLResponse)
-def home(request: Request, db: Session = Depends(get_db)):
+def home():
 
-    print("🔥 HOME CARREGANDO")
+    html = """
+    <html>
+    <head>
+        <title>TalentAI</title>
+        <style>
+            body{
+                font-family:Arial;
+                background:#f4f6f9;
+                padding:60px;
+            }
 
-    try:
-        vagas = db.query(Vaga).all()
-    except Exception as e:
-        print("❌ ERRO AO BUSCAR VAGAS:", e)
-        vagas = []
+            .card{
+                background:white;
+                padding:40px;
+                border-radius:14px;
+                max-width:700px;
+                margin:auto;
+                box-shadow:0 10px 30px rgba(0,0,0,0.08);
+            }
 
-    return templates.TemplateResponse(
-        name="vagas.html",
-        request=request,
-        context={
-            "vagas": vagas
-        }
-    )
+            h1{
+                color:#4f46e5;
+            }
+
+            p{
+                color:#4b5563;
+                line-height:1.6;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div class="card">
+
+            <h1>🚀 TalentAI Online</h1>
+
+            <p>
+                Plataforma inteligente de recrutamento com IA.
+            </p>
+
+            <p>
+                ✔ Sistema online<br>
+                ✔ Deploy automático<br>
+                ✔ Integração com GitHub<br>
+                ✔ FastAPI + IA<br>
+                ✔ Banco de talentos
+            </p>
+
+        </div>
+
+    </body>
+    </html>
+    """
+
+    return HTMLResponse(content=html)
     
 # =========================
 # 📄 DETALHE DA VAGA (COM AUTO-RESUMO)
