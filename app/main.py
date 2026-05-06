@@ -71,9 +71,7 @@ def logout(request: Request):
     request.session.clear()
     return RedirectResponse("/login", status_code=302)
 
-# =========================
-# 🏠 HOME
-# =========================
+
 # =========================
 # 🏠 HOME
 # =========================
@@ -88,10 +86,13 @@ def home(request: Request, db: Session = Depends(get_db)):
         print("❌ ERRO AO BUSCAR VAGAS:", e)
         vagas = []
 
-    return templates.TemplateResponse("vagas.html", {
-        "request": request,
-        "vagas": vagas
-    })
+    return templates.TemplateResponse(
+        request,
+        "vagas.html",
+        {
+            "vagas": vagas
+        }
+    )
     
 # =========================
 # 📄 DETALHE DA VAGA (COM AUTO-RESUMO)
