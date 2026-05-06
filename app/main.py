@@ -29,12 +29,15 @@ print("🔥 CODIGO NOVO RODANDO 🔥")
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key="talentai-secret-key")
 
+from fastapi.staticfiles import StaticFiles
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 import os
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+templates = Jinja2Templates(directory="templates")
 
-# Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 # =========================
 # 🔥 BANCO
@@ -75,114 +78,25 @@ def logout(request: Request):
 # =========================
 # 🏠 HOME
 # =========================
-from fastapi.responses import HTMLResponse
-
 @app.get("/", response_class=HTMLResponse)
-def home():
+def home(request: Request, db: Session = Depends(get_db)):
 
-    html = """
-    <html>
-    <head>
-        <title>TalentAI</title>
-        <style>
-            body{
-                font-family:Arial;
-                background:#f4f6f9;
-                padding:60px;
-            }
+    print("🔥 HOME CARREGANDO")
 
-            .card{
-                background:white;
-                padding:40px;
-                border-radius:14px;
-                max-width:700px;
-                margin:auto;
-                box-shadow:0 10px 30px rgba(0,0,0,0.08);
-            }
-
-            h1{
-                color:#4f46e5;
-            }
-
-            p{
-                color:#4b5563;
-                line-height:1.6;
-            }
-        </style>
-    </head>
-
-    <body>
-
-        <div class="card">
-
-            <h1>🚀 TalentAI Online</h1>
-
-            <p>
-                Plataforma inteligente de recrutamento com IA.
-            </p>
-
-            <p>
-                ✔ Sistema online<br>
-                ✔ Deploy automático<br>
-                ✔ Integração com GitHub<br>
-                ✔ FastAPI + IA<br>
-                ✔ Banco de talentos
-            </p>
-
-        </div>
-
-    </body>
-    </html>
-    """
-
-    return HTMLResponse(content=html)
-    
-# =========================
-# 📄 DETALHE DA VAGA (COM AUTO-RESUMO)
-# =========================
-@app.get("/vaga/{vaga_id}")
-def detalhe_vaga(
-    request: Request,
-    vaga_id: int,
-    db: Session = Depends(get_db)
-):
-    vaga = db.query(Vaga).filter(Vaga.id == vaga_id).first()
-
-    if not vaga:
-        return RedirectResponse(url="/", status_code=303)
-
-    candidatos = db.query(Candidato).filter(Candidato.vaga_id == vaga_id).all()
-
-    # 🔄 AUTO-GERA RESUMO SE NECESSÁRIO
-    for c in candidatos:
-        if not c.resumo or c.resumo == "Resumo automático":
-            try:
-                print(f"🔄 Auto-gerando resumo: {c.nome_arquivo}")
-
-                resultado_ia = analisar_cv_com_ia(c.texto_cv, vaga.descricao)
-
-                if isinstance(resultado_ia, dict):
-                    c.resumo = resultado_ia.get("resumo", "Resumo não gerado")
-                else:
-                    c.resumo = c.texto_cv[:300]
-
-            except Exception as e:
-                print("⚠️ ERRO AUTO RESUMO:", e)
-                c.resumo = c.texto_cv[:300]
-
-    db.commit()
-
-    # 🔥 ORDENA POR SCORE
-    candidatos = sorted(candidatos, key=lambda x: x.score or 0, reverse=True)
+    try:
+        vagas = db.query(Vaga).all()
+    except Exception as e:
+        print("❌ ERRO AO BUSCAR VAGAS:", e)
+        vagas = []
 
     return templates.TemplateResponse(
-    "vaga_detalhe.html",
-    {
-        "request": request,
-        "vaga": vaga,
-        "candidatos": []
-    }
-)
+        name="vagas.html",
+        request=request,
+        context={
+            "vagas": vagas
+        }
+    )
+    
 
 @app.get("/nova_vaga", response_class=HTMLResponse)
 def tela_nova_vaga(request: Request, db: Session = Depends(get_db)):
