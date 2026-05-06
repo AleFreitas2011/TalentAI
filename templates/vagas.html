@@ -9,7 +9,6 @@
     💼 Painel de Vagas
 </h1>
 
-<!-- BOTÃO NOVA VAGA -->
 <a href="/nova_vaga" style="
     display:inline-block;
     margin-bottom:25px;
@@ -24,7 +23,6 @@
     ➕ Nova Vaga
 </a>
 
-<!-- GRID -->
 <div style="
     display:grid;
     grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));
@@ -41,7 +39,6 @@
         box-shadow:0 8px 25px rgba(0,0,0,0.05);
     ">
 
-        <!-- TÍTULO -->
         <div style="
             font-size:18px;
             font-weight:600;
@@ -51,16 +48,14 @@
             {{ vaga.titulo or "Sem título" }}
         </div>
 
-        <!-- CLIENTE -->
-
-        <div style="color:#6b7280; font-size:14px; margin-bottom:12px;">
-            🏢 {% if vaga.cliente %} {% if vaga.cliente.empresa %}
-            <a href="/vagas/cliente/{{ vaga.cliente.id }}" style="color:#4f46e5; text-decoration:none; font-weight:500;">
-               {{ vaga.cliente.empresa }}
-            </a> {% elif vaga.cliente.nome_contato %} {{ vaga.cliente.nome_contato }} {% else %} Cliente sem nome {% endif %} {% else %} Cliente não informado {% endif %}
+        <div style="
+            color:#6b7280;
+            font-size:14px;
+            margin-bottom:12px;
+        ">
+            🏢 {% if vaga.cliente %} {{ vaga.cliente.empresa or vaga.cliente.nome_contato or "Cliente sem nome" }} {% else %} Cliente não informado {% endif %}
         </div>
 
-        <!-- STATUS -->
         <div style="
             display:inline-block;
             background:#eef2ff;
@@ -74,17 +69,14 @@
             {{ vaga.status or "Sem status" }}
         </div>
 
-        <!-- DATA -->
-
         <div style="
             font-size:12px;
             color:#9ca3af;
             margin-bottom:15px;
         ">
-            {% if vaga.data_criacao %} Criada em: {{ vaga.data_criacao.strftime('%d/%m/%Y') }} {% else %} Criada em: - {% endif %}
+            Criada em: {{ vaga.data_criacao or "-" }}
         </div>
 
-        <!-- AÇÕES -->
         <a href="/vaga/{{ vaga.id }}" style="
             display:inline-block;
             background:#10b981;
@@ -98,6 +90,10 @@
         </a>
 
     </div>
+
+    {% else %}
+
+    <p style="color:#6b7280;">Nenhuma vaga cadastrada ainda.</p>
 
     {% endfor %}
 
