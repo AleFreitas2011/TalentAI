@@ -52,19 +52,13 @@
         </div>
 
         <!-- CLIENTE -->
+
         <div style="
             color:#6b7280;
-            font-size:14px;
-            margin-bottom:12px;
+           font-size:14px;
+           margin-bottom:12px;
         ">
-            🏢 {% if vaga.cliente %} {% if vaga.cliente.empresa %}
-            <a href="/vagas/cliente/{{ vaga.cliente.id }}" style="
-                        color:#4f46e5;
-                        text-decoration:none;
-                        font-weight:500;
-                    ">
-                        {{ vaga.cliente.empresa }}
-                    </a> {% else %} {{ vaga.cliente.nome_contato or "Cliente sem nome" }} {% endif %} {% if vaga.cliente.nome_contato %} - {{ vaga.cliente.nome_contato }} {% endif %} {% else %} Cliente não informado {% endif %}
+            🏢 {% if vaga.cliente %} {{ vaga.cliente.empresa or vaga.cliente.nome_contato or "Cliente sem nome" }} {% else %} Cliente não informado {% endif %}
         </div>
 
         <!-- STATUS -->
@@ -82,12 +76,13 @@
         </div>
 
         <!-- DATA -->
+
         <div style="
             font-size:12px;
             color:#9ca3af;
             margin-bottom:15px;
         ">
-            {% if vaga.data_criacao and vaga.data_criacao.strftime %} Criada em: {{ vaga.data_criacao.strftime('%d/%m/%Y') }} {% else %} Criada em: - {% endif %}
+            {% if vaga.data_criacao %} Criada em: {{ vaga.data_criacao }} {% else %} Criada em: - {% endif %}
         </div>
 
         <!-- AÇÕES -->
