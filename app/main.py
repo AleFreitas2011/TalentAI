@@ -87,9 +87,9 @@ def home(request: Request, db: Session = Depends(get_db)):
         vagas = []
 
     return templates.TemplateResponse(
-        request,
-        "vagas.html",
-        {
+        name="vagas.html",
+        request=request,
+        context={
             "vagas": vagas
         }
     )
