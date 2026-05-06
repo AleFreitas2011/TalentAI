@@ -29,12 +29,14 @@ print("🔥 CODIGO NOVO RODANDO 🔥")
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key="talentai-secret-key")
 
+from fastapi.staticfiles import StaticFiles
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 import os
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+templates = Jinja2Templates(directory="templates")
 
-# Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 # =========================
 # 🔥 BANCO
