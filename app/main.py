@@ -34,11 +34,16 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-TEMPLATES_DIR = os.path.join(BASE_DIR, "../templates")
-STATIC_DIR = os.path.join(BASE_DIR, "../static")
+TEMPLATES_DIR = os.path.abspath(
+    os.path.join(BASE_DIR, "../templates")
+)
+
+STATIC_DIR = os.path.abspath(
+    os.path.join(BASE_DIR, "../static")
+)
 
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
-
+ 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 Base.metadata.create_all(bind=engine)
