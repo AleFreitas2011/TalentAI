@@ -30,12 +30,16 @@ app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key="talentai-secret-key")
 
 from fastapi.staticfiles import StaticFiles
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
 import os
 
-templates = Jinja2Templates(directory="templates")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+TEMPLATES_DIR = os.path.join(BASE_DIR, "../templates")
+STATIC_DIR = os.path.join(BASE_DIR, "../static")
+
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
+
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 Base.metadata.create_all(bind=engine)
 
