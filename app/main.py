@@ -702,22 +702,36 @@ def dashboard(
             f"ERRO DASHBOARD: {str(e)}",
             status_code=500
         )
-    
 # =========================
 # 🧠 BANCO DE TALENTOS
 # =========================
 @app.get("/banco_talentos", response_class=HTMLResponse)
-def banco_talentos(request: Request, db: Session = Depends(get_db)):
+def banco_talentos(
+    request: Request,
+    db: Session = Depends(get_db)
+):
 
-    candidatos = db.query(Candidato).order_by(Candidato.data_upload.desc()).all()
+    candidatos = (
+        db.query(Candidato)
+        .order_by(Candidato.data_upload.desc())
+        .all()
+    )
 
-    return templates.TemplateResponse("banco_talentos.html", {
-        "request": request,
-        "candidatos": candidatos
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="banco_talentos.html",
+        context={
+            "request": request,
+            "candidatos": candidatos
+        }
+    )
     
 @app.get("/buscar_talentos", response_class=HTMLResponse)
-def buscar_talentos(request: Request, q: str = "", db: Session = Depends(get_db)):
+def buscar_talentos(
+    request: Request,
+    q: str = "",
+    db: Session = Depends(get_db)
+):
 
     candidatos = db.query(Candidato).all()
 
@@ -727,22 +741,34 @@ def buscar_talentos(request: Request, q: str = "", db: Session = Depends(get_db)
         termo = q.lower()
 
         for c in candidatos:
+
             texto = (c.texto_cv or "").lower()
             nome = (c.nome_arquivo or "").lower()
 
             if termo in texto or termo in nome:
+
                 resultados.append({
                     "nome": c.nome_arquivo,
                     "match": int(c.score or 0),
-                    "skills_ok": (c.skills_extraidas or "").split(",") if c.skills_extraidas else [],
-                    "skills_faltantes": (c.skills_faltantes or "").split(",") if c.skills_faltantes else []
+                    "skills_ok": (
+                        (c.skills_extraidas or "").split(",")
+                        if c.skills_extraidas else []
+                    ),
+                    "skills_faltantes": (
+                        (c.skills_faltantes or "").split(",")
+                        if c.skills_faltantes else []
+                    )
                 })
 
-    return templates.TemplateResponse("buscar_talentos.html", {
-        "request": request,
-        "resultados": resultados,
-        "q": q
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="buscar_talentos.html",
+        context={
+            "request": request,
+            "resultados": resultados,
+            "q": q
+        }
+    )
     
 @app.get("/health")
 def health():
