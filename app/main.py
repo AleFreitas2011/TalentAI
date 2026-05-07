@@ -107,13 +107,21 @@ def home(request: Request, db: Session = Depends(get_db)):
     
 
 @app.get("/nova_vaga", response_class=HTMLResponse)
-def tela_nova_vaga(request: Request, db: Session = Depends(get_db)):
+def tela_nova_vaga(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+
     clientes = db.query(Cliente).all()
 
-    return templates.TemplateResponse("nova_vaga.html", {
-        "request": request,
-        "clientes": clientes
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="nova_vaga.html",
+        context={
+            "request": request,
+            "clientes": clientes
+        }
+    )
 
 @app.post("/nova_vaga")
 def nova_vaga(
