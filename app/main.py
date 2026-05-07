@@ -138,22 +138,44 @@ def nova_vaga(
 
 @app.get("/vaga/{vaga_id}", response_class=HTMLResponse)
 def detalhe_vaga(request: Request, vaga_id: int, db: Session = Depends(get_db)):
-    vaga = db.query(Vaga).filter(Vaga.id == vaga_id).first()
 
-    if not vaga:
-        return HTMLResponse("Vaga não encontrada", status_code=404)
+    print("🔥 ABRINDO DETALHE DA VAGA")
 
-    candidatos = db.query(Candidato)\
-        .filter(Candidato.vaga_id == vaga_id)\
-        .order_by(Candidato.score.desc())\
-        .all()
+    try:
+        vaga = db.query(Vaga).filter(Vaga.id == vaga_id).first()
 
-    return templates.TemplateResponse("vaga_detalhe.html", {
-        "request": request,
-        "vaga": vaga,
-        "candidatos": candidatos
-    })
+        print("✅ VAGA OK")
 
+        if not vaga:
+            return HTMLResponse("Vaga não encontrada", status_code=404)
+
+        candidatos = db.query(Candidato)\
+            .filter(Candidato.vaga_id == vaga_id)\
+            .order_by(Candidato.score.desc())\
+            .all()
+
+        print("✅ CANDIDATOS OK")
+
+        for c in candidatos:
+            print("👤", c.nome_arquivo, c.score)
+
+        return templates.TemplateResponse(
+            "vaga_detalhe.html",
+            {
+                "request": request,
+                "vaga": vaga,
+                "candidatos": candidatos
+            }
+        )
+
+    except Exception as e:
+        print("❌ ERRO DETALHE VAGA:")
+        print(e)
+
+        return HTMLResponse(
+            f"ERRO DETALHE VAGA: {str(e)}",
+            status_code=500
+        )
 
 # =========================
 # 🤖 ANALISAR CVS (ROTA FINAL LIMPA)
