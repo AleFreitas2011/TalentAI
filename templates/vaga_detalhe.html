@@ -119,10 +119,32 @@
 
     <!-- HEADER -->
     <div class="header">
-        <div class="title">{{ vaga.titulo }}</div>
+
+        <div class="title">
+            {{ vaga.titulo }}
+        </div>
+
+        <div style="margin-top:20px;">
+
+            <a href="/fechar_vaga/{{ vaga.id }}" style="
+              background:#ef4444;
+              color:white;
+              padding:10px 16px;
+              border-radius:10px;
+              text-decoration:none;
+              font-weight:600;
+              display:inline-block;
+              box-shadow:0 4px 12px rgba(239,68,68,0.25);
+           ">
+           ❌ Fechar Vaga
+        </a>
+
+        </div>
+
         <div class="subtitle">
             {{ vaga.cliente.empresa or vaga.cliente.nome_contato }} • {{ vaga.status }}
         </div>
+
     </div>
 
     <!-- DESCRIÇÃO -->

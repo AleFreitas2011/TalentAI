@@ -191,6 +191,31 @@ def detalhe_vaga(
             status_code=500
         )
         
+        
+# =========================
+# ❌ FECHAR VAGA
+# =========================
+@app.get("/fechar_vaga/{vaga_id}")
+def fechar_vaga(
+    vaga_id: int,
+    db: Session = Depends(get_db)
+):
+
+    vaga = (
+        db.query(Vaga)
+        .filter(Vaga.id == vaga_id)
+        .first()
+    )
+
+    if vaga:
+        vaga.status = "Fechada"
+        db.commit()
+
+    return RedirectResponse(
+        url="/",
+        status_code=303
+    )
+        
 # =========================
 # 🤖 ANALISAR CVS (ROTA FINAL LIMPA)
 # =========================
