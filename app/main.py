@@ -74,7 +74,6 @@ def logout(request: Request):
     request.session.clear()
     return RedirectResponse("/login", status_code=302)
 
-
 # =========================
 # 🏠 HOME
 # =========================
@@ -363,14 +362,13 @@ Telefone: {c.telefone or "-"}
         else:
             conteudo_email += "\n\nFico à disposição para próximos passos."
 
-        import webbrowser
         import urllib.parse
 
         link = f"https://mail.google.com/mail/?view=cm&fs=1&to={cliente.email}&su={urllib.parse.quote('Candidatos - ' + vaga.titulo)}&body={urllib.parse.quote(conteudo_email)}"
 
         print("🚀 LINK EMAIL:", link)
 
-        webbrowser.open(link)
+        return RedirectResponse(link, status_code=302)
 
         # 📊 SALVAR HISTÓRICO
         envio = Envio(
@@ -434,14 +432,13 @@ Telefone: {c.telefone or "-"}
         else:
             conteudo_email += "\n\nFico à disposição para próximos passos."
 
-        import webbrowser
         import urllib.parse
 
         link = f"https://mail.google.com/mail/?view=cm&fs=1&to={cliente.email}&su={urllib.parse.quote('Candidatos - ' + vaga.titulo)}&body={urllib.parse.quote(conteudo_email)}"
 
         print("🚀 LINK EMAIL:", link)
 
-        webbrowser.open(link)
+        return RedirectResponse(link, status_code=302)
 
         # 📊 CONTADOR
         if not hasattr(vaga, "candidatos_enviados") or vaga.candidatos_enviados is None:
