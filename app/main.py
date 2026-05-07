@@ -615,23 +615,49 @@ def criar_cliente(
 # 📊 DASHBOARD
 # =========================
 @app.get("/dashboard", response_class=HTMLResponse)
-def dashboard(request: Request, db: Session = Depends(get_db)):
+def dashboard(
+    request: Request,
+    db: Session = Depends(get_db)
+):
 
-    vagas_abertas = db.query(Vaga).filter(Vaga.status == "Aberta").count()
-    total_candidatos = db.query(Candidato).count()
+    try:
+        vagas_abertas = db.query(Vaga)\
+            .filter(Vaga.status == "Aberta")\
+            .count()
 
-    media_score = db.query(Candidato.score).all()
-    media = 0
+        total_candidatos = db.query(Candidato).count()
 
-    if media_score:
-        media = round(sum([c[0] or 0 for c in media_score]) / len(media_score), 2)
+        media_score = db.query(Candidato.score).all()
 
-    return templates.TemplateResponse("dashboard.html", {
-        "request": request,
-        "vagas_abertas": vagas_abertas,
-        "total_candidatos": total_candidatos,
-        "media_score": media
-    })
+        media = 0
+
+        if media_score:
+            media = round(
+                sum([c[0] or 0 for c in media_score]) / len(media_score),
+                2
+            )
+
+        print("✅ DASHBOARD OK")
+
+        return templates.TemplateResponse(
+            request=request,
+            name="dashboard.html",
+            context={
+                "request": request,
+                "vagas_abertas": vagas_abertas,
+                "total_candidatos": total_candidatos,
+                "media_score": media
+            }
+        )
+
+    except Exception as e:
+        print("❌ ERRO DASHBOARD:")
+        print(e)
+
+        return HTMLResponse(
+            f"ERRO DASHBOARD: {str(e)}",
+            status_code=500
+        )
     
 # =========================
 # 🧠 BANCO DE TALENTOS
