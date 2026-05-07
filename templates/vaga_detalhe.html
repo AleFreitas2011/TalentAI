@@ -124,138 +124,142 @@
             {{ vaga.titulo }}
         </div>
 
-        <div style="margin-top:20px;">
+        <div style="margin-top:12px;">
 
             <a href="/fechar_vaga/{{ vaga.id }}" style="
-              background:#ef4444;
-              color:white;
-              padding:10px 16px;
-              border-radius:10px;
-              text-decoration:none;
-              font-weight:600;
-              display:inline-block;
-              box-shadow:0 4px 12px rgba(239,68,68,0.25);
-           ">
-           ❌ Fechar Vaga
-        </a>
+          background:#fff5f5;
+          color:#dc2626;
+          padding:8px 14px;
+          border-radius:8px;
+          text-decoration:none;
+          font-size:14px;
+          font-weight:600;
+          border:1px solid #fecaca;
+          display:inline-block;
+          transition:0.2s;
+       ">
+       ❌ Fechar vaga
+    </a>
 
-        </div>
-
-        <div class="subtitle">
-            {{ vaga.cliente.empresa or vaga.cliente.nome_contato }} • {{ vaga.status }}
         </div>
 
     </div>
 
-    <!-- DESCRIÇÃO -->
-    <div class="card">
-        <b>Descrição</b>
-        <p style="margin-top:8px;">{{ vaga.descricao }}</p>
+    <div class="subtitle">
+        {{ vaga.cliente.empresa or vaga.cliente.nome_contato }} • {{ vaga.status }}
     </div>
 
-    <!-- ANALISAR CVS -->
-    <div class="card">
-        <form action="/analisar_cvs/{{ vaga.id }}" method="post" enctype="multipart/form-data">
-            <input type="file" name="arquivos" multiple required>
-            <br><br>
-            <button class="btn-primary">
+</div>
+
+<!-- DESCRIÇÃO -->
+<div class="card">
+    <b>Descrição</b>
+    <p style="margin-top:8px;">{{ vaga.descricao }}</p>
+</div>
+
+<!-- ANALISAR CVS -->
+<div class="card">
+    <form action="/analisar_cvs/{{ vaga.id }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="arquivos" multiple required>
+        <br><br>
+        <button class="btn-primary">
                 Analisar CVs com IA
             </button>
-        </form>
-    </div>
+    </form>
+</div>
 
-    <!-- BOTÃO PRINCIPAL -->
-    <div style="margin-bottom:20px;">
-        <a href="/enviar_cliente/{{ vaga.id }}" class="btn-secondary">
+<!-- BOTÃO PRINCIPAL -->
+<div style="margin-bottom:20px;">
+    <a href="/enviar_cliente/{{ vaga.id }}" class="btn-secondary">
             Enviar para cliente
         </a>
-    </div>
+</div>
 
-    <!-- LISTA -->
-    <h2>Ranking de Candidatos</h2>
-    <p>Total: {{ candidatos|length }}</p>
+<!-- LISTA -->
+<h2>Ranking de Candidatos</h2>
+<p>Total: {{ candidatos|length }}</p>
 
-    <!-- FORM CORRETO -->
-    <form method="post" action="/enviar_cliente/{{ vaga.id }}">
+<!-- FORM CORRETO -->
+<form method="post" action="/enviar_cliente/{{ vaga.id }}">
 
-        <!-- CLIENTE (APENAS UMA VEZ) -->
-        <input type="hidden" name="cliente_id" value="{{ vaga.cliente.id }}">
+    <!-- CLIENTE (APENAS UMA VEZ) -->
+    <input type="hidden" name="cliente_id" value="{{ vaga.cliente.id }}">
 
-        <!-- 🌎 IDIOMA -->
-        <div style="margin-bottom:15px; padding:10px; background:#f9fafb; border-radius:8px;">
-            <label style="font-weight:600; font-size:14px;">
+    <!-- 🌎 IDIOMA -->
+    <div style="margin-bottom:15px; padding:10px; background:#f9fafb; border-radius:8px;">
+        <label style="font-weight:600; font-size:14px;">
             Idioma do email:
         </label>
 
-            <br><br>
+        <br><br>
 
-            <label style="margin-right:20px;">
+        <label style="margin-right:20px;">
             <input type="radio" name="idioma" value="PT" checked>
             Português
         </label>
 
-            <label>
+        <label>
             <input type="radio" name="idioma" value="EN">
             English
         </label>
-        </div>
+    </div>
 
-        <input type="hidden" name="cliente_id" value="{{ vaga.cliente.id }}"> {% for c in candidatos %} {% set score = c.score or 0 %}
+    <input type="hidden" name="cliente_id" value="{{ vaga.cliente.id }}"> {% for c in candidatos %} {% set score = c.score or 0 %}
 
-        <div class="card {% if loop.index == 1 %}top{% endif %}">
+    <div class="card {% if loop.index == 1 %}top{% endif %}">
 
-            <div style="display:flex; gap:10px; align-items:flex-start;">
+        <div style="display:flex; gap:10px; align-items:flex-start;">
 
-                <input type="checkbox" name="candidatos_ids" value="{{ c.id }}" style="margin-top:5px;">
+            <input type="checkbox" name="candidatos_ids" value="{{ c.id }}" style="margin-top:5px;">
 
-                <div style="flex:1;">
+            <div style="flex:1;">
 
-                    <div style="display:flex; justify-content:space-between;">
-                        <strong>
+                <div style="display:flex; justify-content:space-between;">
+                    <strong>
                             {% if loop.index == 1 %}Top • {% endif %}
                             {{ c.nome_arquivo }}
                         </strong> {% if score >= 70 %}
-                        <span class="score high">{{ score }}%</span> {% elif score >= 50 %}
-                        <span class="score mid">{{ score }}%</span> {% else %}
-                        <span class="score low">{{ score }}%</span> {% endif %}
-                    </div>
+                    <span class="score high">{{ score }}%</span> {% elif score >= 50 %}
+                    <span class="score mid">{{ score }}%</span> {% else %}
+                    <span class="score low">{{ score }}%</span> {% endif %}
+                </div>
 
-                    <div class="progress">
-                        <div class="bar" style="width: {{ score }}%"></div>
-                    </div>
+                <div class="progress">
+                    <div class="bar" style="width: {{ score }}%"></div>
+                </div>
 
-                    <p style="margin-top:10px;">
-                        <b>Resumo:</b><br> {{ c.resumo or "Sem resumo" }}
-                    </p>
+                <p style="margin-top:10px;">
+                    <b>Resumo:</b><br> {{ c.resumo or "Sem resumo" }}
+                </p>
 
-                    <p><b>Email:</b> {{ c.email or "Não encontrado" }}</p>
-                    <p><b>Telefone:</b> {{ c.telefone or "Não encontrado" }}</p>
+                <p><b>Email:</b> {{ c.email or "Não encontrado" }}</p>
+                <p><b>Telefone:</b> {{ c.telefone or "Não encontrado" }}</p>
 
-                    <div style="margin-top:10px;">
-                        <a href="/whatsapp_candidato/{{ vaga.id }}/{{ c.id }}" class="btn-whatsapp">
+                <div style="margin-top:10px;">
+                    <a href="/whatsapp_candidato/{{ vaga.id }}/{{ c.id }}" class="btn-whatsapp">
                             WhatsApp
                         </a>
-                    </div>
-
                 </div>
 
             </div>
 
         </div>
 
-        {% endfor %}
+    </div>
 
-        <br>
-
-        <button type="submit" class="btn-primary">
-            Gerar email com selecionados
-        </button>
-
-    </form>
+    {% endfor %}
 
     <br>
 
-    <a href="/" style="color:#7c3aed; text-decoration:none;">
+    <button type="submit" class="btn-primary">
+            Gerar email com selecionados
+        </button>
+
+</form>
+
+<br>
+
+<a href="/" style="color:#7c3aed; text-decoration:none;">
         ← Voltar
     </a>
 
