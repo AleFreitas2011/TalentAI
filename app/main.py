@@ -624,6 +624,10 @@ def dashboard(
         vagas_abertas = db.query(Vaga)\
             .filter(Vaga.status == "Aberta")\
             .count()
+            
+        vagas_finalizadas = db.query(Vaga)\
+            .filter(Vaga.status == "Fechada")\
+            .count()  
 
         total_candidatos = db.query(Candidato).count()
 
@@ -645,6 +649,7 @@ def dashboard(
             context={
                 "request": request,
                 "vagas_abertas": vagas_abertas,
+                "vagas_finalizadas": vagas_finalizadas,
                 "total_candidatos": total_candidatos,
                 "media_score": media
             }
