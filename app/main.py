@@ -615,12 +615,18 @@ Happy to discuss next steps.
         }
     )
     
-    # =========================
-# 🏢 NOVO CLIENTE (TELA)
-# =========================
 @app.get("/novo_cliente", response_class=HTMLResponse)
-def tela_novo_cliente(request: Request):
-    return templates.TemplateResponse("novo_cliente.html", {"request": request})
+def tela_novo_cliente(
+    request: Request
+):
+
+    return templates.TemplateResponse(
+        request=request,
+        name="novo_cliente.html",
+        context={
+            "request": request
+        }
+    )
 
 # =========================
 # 🏢 NOVO CLIENTE (SALVAR)
