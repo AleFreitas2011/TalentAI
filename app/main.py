@@ -726,10 +726,23 @@ def historico_envios(
     try:
 
         envios = (
-            db.query(Envio)
-            .order_by(Envio.id.desc())
-            .all()
-        )
+    db.query(Envio)
+    .order_by(Envio.id.desc())
+    .all()
+)
+
+for envio in envios:
+
+    envio.vaga_nome = "-"
+
+    vaga = (
+        db.query(Vaga)
+        .filter(Vaga.id == envio.vaga_id)
+        .first()
+    )
+
+    if vaga:
+        envio.vaga_nome = vaga.titulo
 
         return templates.TemplateResponse(
             request=request,
