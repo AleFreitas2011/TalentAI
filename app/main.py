@@ -63,17 +63,28 @@ def get_db():
 # =========================
 @app.get("/login", response_class=HTMLResponse)
 def tela_login(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+
+    return templates.TemplateResponse(
+        request=request,
+        name="login.html",
+        context={
+            "request": request
+        }
+    )
 
 @app.post("/login")
 def login(request: Request, email: str = Form(...), senha: str = Form(...), db=Depends(get_db)):
     user = db.query(Usuario).filter(Usuario.email == email).first()
 
     if not user or user.senha != senha:
-        return templates.TemplateResponse("login.html", {
-            "request": request,
-            "erro": "Email ou senha inválidos"
-        })
+        return templates.TemplateResponse(
+    request=request,
+    name="login.html",
+    context={
+        "request": request,
+        "erro": "Email ou senha inválidos"
+    }
+)
 
     request.session["user_id"] = user.id
     return RedirectResponse("/", status_code=302)
