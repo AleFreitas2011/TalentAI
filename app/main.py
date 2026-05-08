@@ -713,6 +713,43 @@ def dashboard(
             f"ERRO DASHBOARD: {str(e)}",
             status_code=500
         )
+        
+# =========================
+# 📨 HISTÓRICO DE ENVIOS
+# =========================
+@app.get("/historico_envios", response_class=HTMLResponse)
+def historico_envios(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+
+    try:
+
+        envios = (
+            db.query(Envio)
+            .order_by(Envio.id.desc())
+            .all()
+        )
+
+        return templates.TemplateResponse(
+            request=request,
+            name="historico_envios.html",
+            context={
+                "request": request,
+                "envios": envios
+            }
+        )
+
+    except Exception as e:
+
+        print("❌ ERRO HISTÓRICO:")
+        print(e)
+
+        return HTMLResponse(
+            f"ERRO HISTÓRICO: {str(e)}",
+            status_code=500
+        )
+        
 # =========================
 # 🧠 BANCO DE TALENTOS
 # =========================
