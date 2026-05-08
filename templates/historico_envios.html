@@ -48,14 +48,14 @@
                         color:#111827;
                         margin-bottom:6px;
                     ">
-                    {{ e.vaga }}
+                    {{ e.vaga.titulo if e.vaga else "-" }}
                 </div>
 
                 <div style="
                         color:#6b7280;
                         font-size:14px;
                     ">
-                    {{ e.cliente }}
+                    {{ e.cliente.empresa if e.cliente else "-" }}
                 </div>
 
             </div>
