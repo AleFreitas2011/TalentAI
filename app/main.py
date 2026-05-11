@@ -49,6 +49,61 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 Base.metadata.create_all(bind=engine)
 
 # =========================
+# 📝 REGISTER
+# =========================
+@app.get("/register", response_class=HTMLResponse)
+def tela_register(request: Request):
+
+    return templates.TemplateResponse(
+        request=request,
+        name="register.html",
+        context={
+            "request": request
+        }
+    )
+
+
+@app.post("/register")
+def register(
+    request: Request,
+    email: str = Form(...),
+    senha: str = Form(...),
+    db: Session = Depends(get_db)
+):
+
+    usuario_existente = (
+        db.query(Usuario)
+        .filter(Usuario.email == email)
+        .first()
+    )
+
+    if usuario_existente:
+
+        return templates.TemplateResponse(
+            request=request,
+            name="register.html",
+            context={
+                "request": request,
+                "erro": "Usuário já cadastrado"
+            }
+        )
+
+    novo_usuario = Usuario(
+        email=email,
+        senha=senha
+    )
+
+    db.add(novo_usuario)
+    db.commit()
+
+    request.session["user_id"] = novo_usuario.id
+
+    return RedirectResponse(
+        url="/",
+        status_code=302
+    )
+
+# =========================
 # 🔥 BANCO
 # =========================
 def get_db():
