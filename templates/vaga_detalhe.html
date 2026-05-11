@@ -223,6 +223,16 @@
                         <b>Resumo:</b><br> {{ c.resumo or "Sem resumo" }}
                     </p>
 
+                    {% if c.skills_extraidas %}
+                    <p style="margin-top:10px; color:#166534;">
+                        <b>Skills encontradas:</b><br> {{ c.skills_extraidas }}
+                    </p>
+                    {% endif %} {% if c.skills_faltantes %}
+                    <p style="margin-top:10px; color:#dc2626;">
+                        <b>Skills faltantes:</b><br> {{ c.skills_faltantes }}
+                    </p>
+                    {% endif %}
+
                     <p><b>Email:</b> {{ c.email or "Não encontrado" }}</p>
                     <p><b>Telefone:</b> {{ c.telefone or "Não encontrado" }}</p>
 
