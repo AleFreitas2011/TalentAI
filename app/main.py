@@ -370,20 +370,30 @@ async def analisar_cvs(
               print(f"⚠️ CV já existe, ignorando: {arquivo.filename}")
               continue
 
-            # 💾 SALVAR
-            candidato = Candidato(
-                nome_arquivo=arquivo.filename,
-                texto_cv=texto,
-                email=email,
-                telefone=telefone,
-                score=score_final,
-                resumo=resumo_ia,
-                dados_ia=json.dumps(resultado_match) if isinstance(resultado_match, dict) else None,
-                vaga_id=vaga.id,
+            ## 💾 SALVAR
+candidato = Candidato(
+    nome_arquivo=arquivo.filename,
+    texto_cv=texto,
+    email=email,
+    telefone=telefone,
+    score=score_final,
+    resumo=resumo_ia,
 
-                # 🔥 NOVO CAMPO AQUI
-                origem="Upload CV"
-            )
+    skills_extraidas=", ".join(
+        resultado_match.get("encontradas", [])
+    ) if isinstance(resultado_match, dict) else "",
+
+    skills_faltantes=", ".join(
+        resultado_match.get("faltantes", [])
+    ) if isinstance(resultado_match, dict) else "",
+
+    dados_ia=json.dumps(resultado_match) if isinstance(resultado_match, dict) else None,
+
+    vaga_id=vaga.id,
+
+    # 🔥 ORIGEM
+    origem="Upload CV"
+)
 
             db.add(candidato)
 
