@@ -48,6 +48,18 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 Base.metadata.create_all(bind=engine)
 
+
+
+# =========================
+# 🔥 BANCO
+# =========================
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+        
 # =========================
 # 📝 REGISTER
 # =========================
@@ -102,16 +114,6 @@ def register(
         url="/",
         status_code=302
     )
-
-# =========================
-# 🔥 BANCO
-# =========================
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 # =========================
 # 🔐 LOGIN
