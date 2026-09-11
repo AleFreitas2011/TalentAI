@@ -7,6 +7,7 @@ import os
 import tempfile
 import json
 
+from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
 from sqlalchemy.orm import Session
 
@@ -35,6 +36,7 @@ from app.routes.detalhe_vaga import router as detalhe_vaga_router
 from app.routes.workspace import router as workspace_router
 from app.routes.careers import router as careers_router
 
+load_dotenv()
 
 app = FastAPI()
 
@@ -64,7 +66,7 @@ app.add_middleware(
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key="talentai-secret-key"
+    secret_key=os.getenv("SESSION_SECRET_KEY")
 )
 
 # =========================
