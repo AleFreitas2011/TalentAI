@@ -23,6 +23,7 @@ from app.services.phone_extractor import extrair_telefone
 from app.services.match import calcular_match
 from app.services.ai_match import analisar_cv_com_ia
 from app.services.candidate_processor import processar_candidato
+from app.services.auth import hash_senha, verificar_senha
 
 from app.routes.buscar_talentos import router as buscar_talentos_router
 from app.routes.clientes import router as clientes_router
@@ -142,7 +143,7 @@ def register(
 
     novo_usuario = Usuario(
         email=email,
-        senha=senha
+        senha=hash_senha(senha)
     )
 
     db.add(novo_usuario)
@@ -173,7 +174,7 @@ def tela_login(request: Request):
 def login(request: Request, email: str = Form(...), senha: str = Form(...), db=Depends(get_db)):
     user = db.query(Usuario).filter(Usuario.email == email).first()
 
-    if not user or user.senha != senha:
+    if not user or not verificar_senha(senha, user.senha):
         return templates.TemplateResponse(
     request=request,
     name="login.html",
