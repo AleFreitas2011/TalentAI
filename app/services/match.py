@@ -1,5 +1,7 @@
 import re
 
+print("🔥 MATCH.PY NOVO CARREGADO 🔥")
+
 
 def normalizar(texto):
     texto = texto.lower()
@@ -7,6 +9,11 @@ def normalizar(texto):
     # 🔥 padronizações inteligentes
     texto = texto.replace("s/4hana", "s4hana")
     texto = texto.replace("procure to pay", "p2p")
+
+    texto = texto.replace("c++", "cplusplus")
+    texto = texto.replace("c#", "csharp")
+    texto = texto.replace(".net", "dotnet")
+    texto = texto.replace("wi-fi", "wifi")
 
     # remove caracteres especiais
     texto = re.sub(r"[^a-z0-9\s]", " ", texto)
@@ -21,10 +28,26 @@ def calcular_match(vaga, texto_cv):
 
     texto_cv = normalizar(texto_cv)
 
-    obrigatorios = [
-        "sap", "mm", "s4hana", "p2p",
-        "fiscal", "tax", "brazil"
-    ]
+    # Skills obrigatórias da vaga
+
+    obrigatorios = []
+
+    if vaga.palavras_chave:
+
+        obrigatorios = [
+
+            normalizar(skill)
+
+            for skill in vaga.palavras_chave.split(",")
+
+            if skill.strip()
+
+        ]
+
+        print("=" * 60)
+        print("PALAVRAS-CHAVE DA VAGA")
+        print(obrigatorios)
+        print("=" * 60)
 
     importantes = [
         "integration", "idoc", "interface",

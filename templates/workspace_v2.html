@@ -1,0 +1,338 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="workspace">
+
+    <!-- ===================================================== -->
+    <!-- HERO -->
+    <!-- ===================================================== -->
+
+    <section class="workspace-hero">
+
+        <div class="workspace-header">
+
+            <div>
+
+                <span class="workspace-label">
+                    Talent Acquisition Workspace
+                </span>
+
+                <h1 class="workspace-title">
+                    {{ vaga.titulo }}
+                </h1>
+
+                <p class="workspace-client">
+                    {{ vaga.cliente.empresa or vaga.cliente.nome_contato }}
+                </p>
+
+            </div>
+
+            <div class="workspace-icon">
+
+                💼
+
+            </div>
+
+        </div>
+
+        <div class="workspace-meta">
+
+            <span class="badge badge-success">
+                {{ vaga.status }}
+            </span>
+
+            <span class="badge">
+                {{ vaga.senioridade or "Senior" }}
+            </span>
+
+            <span class="badge">
+                {{ vaga.modelo_trabalho or "Remoto" }}
+            </span>
+
+            <span class="badge">
+                {{ vaga.idioma or "Português" }}
+            </span>
+
+        </div>
+
+        <div class="workspace-created">
+
+            Criada em {{ vaga.data_criacao }}
+
+        </div>
+
+        <div class="workspace-actions">
+
+            <a
+                href="/editar_vaga/{{ vaga.id }}"
+                class="btn-primary">
+
+                Editar Vaga
+
+            </a>
+
+            <a
+                href="/gerar_anuncio_ia/{{ vaga.id }}"
+                class="btn-ai">
+
+                Gerar Anúncio IA
+
+            </a>
+
+            <a
+                href="/fechar_vaga/{{ vaga.id }}"
+                class="btn-dark">
+
+                Encerrar Vaga
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- KPI -->
+    <!-- ===================================================== -->
+
+    <section class="workspace-section">
+
+        <div class="section-header">
+
+            <h2>
+                Indicadores
+            </h2>
+
+            <p>
+                Acompanhe rapidamente o andamento da vaga.
+            </p>
+
+        </div>
+
+        <div class="grid grid-4">
+
+            <div class="workspace-card">
+
+                <span class="kpi-label">
+                    Candidatos
+                </span>
+
+                <div class="kpi-value">
+
+                    {{ candidatos|length }}
+
+                </div>
+
+            </div>
+
+            <div class="workspace-card">
+
+                <span class="kpi-label">
+                    Top Match
+                </span>
+
+                <div class="kpi-value">
+
+                    {{ candidatos|selectattr('score','ge',80)|list|length }}
+
+                </div>
+
+            </div>
+
+            <div class="workspace-card">
+
+                <span class="kpi-label">
+                    Enviados
+                </span>
+
+                <div class="kpi-value">
+
+                    {{ candidatos|selectattr('etapa','equalto','Enviado')|list|length }}
+
+                </div>
+
+            </div>
+
+            <div class="workspace-card">
+
+                <span class="kpi-label">
+                    Cliente
+                </span>
+
+                <div class="kpi-text">
+
+                    {{ vaga.cliente.empresa }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- UPLOAD -->
+    <!-- ===================================================== -->
+
+    <section class="workspace-section">
+
+        <div class="section-header">
+
+            <h2>
+
+                Upload Inteligente
+
+            </h2>
+
+            <p>
+
+                Faça upload dos currículos para iniciar a análise da TALIA.
+
+            </p>
+
+        </div>
+
+        <div class="workspace-upload">
+
+            <form
+                action="/analisar_cvs/{{ vaga.id }}"
+                method="post"
+                enctype="multipart/form-data">
+
+                <input
+                    type="file"
+                    name="arquivos"
+                    multiple
+                    required>
+
+                <button
+                    type="submit"
+                    class="btn-success">
+
+                    Analisar CVs com IA
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- RANKING -->
+    <!-- ===================================================== -->
+
+    <section class="workspace-section">
+
+        <div class="section-header">
+
+            <h2>
+
+                Ranking Inteligente
+
+            </h2>
+
+            <p>
+
+                Os candidatos analisados pela TALIA aparecerão aqui.
+
+            </p>
+
+        </div>
+
+        <div class="workspace-ranking">
+
+            <!--
+                Próxima Sprint
+
+                Talent Cards
+            -->
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ===================================================== -->
+    <!-- SHORTLIST -->
+    <!-- ===================================================== -->
+
+    <section class="workspace-section">
+
+        <div class="section-header">
+
+            <h2>
+
+                Compartilhar Shortlist
+
+            </h2>
+
+            <p>
+
+                Envie os melhores candidatos ao cliente.
+
+            </p>
+
+        </div>
+
+        <div class="workspace-shortlist">
+
+            <form>
+
+                <label>
+
+                    Idioma
+
+                </label>
+
+                <br><br>
+
+                <label>
+
+                    <input
+                        type="radio"
+                        checked>
+
+                    Português
+
+                </label>
+
+                &nbsp;&nbsp;
+
+                <label>
+
+                    <input
+                        type="radio">
+
+                    English
+
+                </label>
+
+                <br><br>
+
+                <button
+                    class="btn-primary">
+
+                    Gerar Email Executivo
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

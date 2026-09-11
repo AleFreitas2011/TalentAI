@@ -1,0 +1,398 @@
+/* ==========================
+   DASHBOARD CARDS
+========================== */
+
+.dashboard-card{
+
+    border-radius:20px;
+
+    padding:28px;
+
+    min-height:180px;
+
+    border:1px solid transparent;
+
+    box-shadow:0 8px 30px rgba(15,23,42,.06);
+
+    transition:.25s;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-between;
+
+}
+
+.dashboard-card:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 16px 40px rgba(15,23,42,.10);
+
+}
+
+/* Azul */
+
+.dashboard-card-primary{
+
+    background:#EFF6FF;
+
+    border-color:#BFDBFE;
+
+}
+
+/* Verde */
+
+.dashboard-card-success{
+
+    background:#F0FDF4;
+
+    border-color:#BBF7D0;
+
+}
+
+/* Amarelo */
+
+.dashboard-card-warning{
+
+    background:#FFFBEB;
+
+    border-color:#FDE68A;
+
+}
+
+/* Roxo */
+
+.dashboard-card-secondary{
+
+    background:#FAF5FF;
+
+    border-color:#DDD6FE;
+
+}
+
+.dashboard-number{
+
+    font-size:48px;
+
+    font-weight:800;
+
+    line-height:1;
+
+    margin:18px 0 10px;
+
+}
+
+.dashboard-card-primary .dashboard-number{
+    color:#2563EB;
+}
+
+.dashboard-card-success .dashboard-number{
+    color:#16A34A;
+}
+
+.dashboard-card-warning .dashboard-number{
+    color:#D97706;
+}
+
+.dashboard-card-secondary .dashboard-number{
+    color:#7C3AED;
+}
+
+.dashboard-label{
+
+    font-size:16px;
+
+    font-weight:600;
+
+    color:#334155;
+
+}
+
+.dashboard-footer{
+
+    margin-top:18px;
+
+    font-size:13px;
+
+    color:#64748B;
+
+}
+
+/* =====================================================
+   DASHBOARD LAYOUT
+===================================================== */
+
+.dashboard-link{
+
+    text-decoration:none;
+
+    color:inherit;
+
+}
+
+.dashboard-metrics{
+
+    margin-bottom:40px;
+
+}
+
+/* =====================================================
+   EXECUTIVE METRICS
+===================================================== */
+
+.metric-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:#FFFFFF;
+
+    border:1px solid var(--color-border);
+
+    border-radius:24px;
+
+    padding:32px;
+
+    min-height:190px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-between;
+
+    transition:all .25s ease;
+
+    box-shadow:0 8px 24px rgba(15,23,42,.05);
+
+}
+
+.metric-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:100%;
+
+    height:4px;
+
+    background:linear-gradient(
+        90deg,
+        var(--color-primary),
+        var(--color-secondary),
+        var(--color-accent)
+    );
+
+}
+
+.metric-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 20px 45px rgba(15,23,42,.10);
+
+    border-color:#D7DCE5;
+
+}
+
+.metric-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+}
+
+.metric-title{
+
+    font-size:13px;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    letter-spacing:.10em;
+
+    color:#64748B;
+
+}
+
+.metric-subtitle{
+
+    margin-top:6px;
+
+    font-size:14px;
+
+    color:#94A3B8;
+
+}
+
+.metric-value{
+
+    margin:28px 0;
+
+    font-size:52px;
+
+    font-weight:700;
+
+    line-height:1;
+
+    letter-spacing:-2px;
+
+    color:#0F172A;
+
+}
+
+.metric-footer{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    font-size:14px;
+
+    color:#64748B;
+
+}
+
+.metric-trend{
+
+    color:#16A34A;
+
+    font-weight:700;
+
+}
+
+/* =====================================================
+   RECRUITMENT PIPELINE
+===================================================== */
+
+.pipeline-card{
+
+    background:#FFFFFF;
+
+    border:1px solid var(--color-border);
+
+    border-radius:24px;
+
+    padding:32px;
+
+    box-shadow:var(--shadow-sm);
+
+}
+
+.pipeline-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    margin-bottom:32px;
+
+}
+
+.pipeline-header h2{
+
+    font-size:30px;
+
+    margin-bottom:6px;
+
+}
+
+.pipeline-header p{
+
+    color:#64748B;
+
+}
+
+.pipeline-total{
+
+    text-align:right;
+
+    font-size:40px;
+
+    font-weight:800;
+
+    color:var(--color-primary);
+
+}
+
+.pipeline-total span{
+
+    display:block;
+
+    font-size:13px;
+
+    color:#64748B;
+
+    font-weight:500;
+
+}
+
+.pipeline-stage{
+
+    margin-bottom:24px;
+
+}
+
+.pipeline-info{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:10px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+}
+
+.pipeline-bar{
+
+    height:10px;
+
+    border-radius:999px;
+
+    background:#EEF2F7;
+
+    overflow:hidden;
+
+}
+
+.pipeline-fill{
+
+    height:100%;
+
+    border-radius:999px;
+
+    background:linear-gradient(
+        90deg,
+        var(--color-primary),
+        var(--color-secondary)
+    );
+
+}
+
+.fill-100{width:100%;}
+.fill-70{width:70%;}
+.fill-50{width:50%;}
+.fill-35{width:35%;}
+.fill-20{width:20%;}
+.fill-10{width:10%;}
+

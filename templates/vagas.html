@@ -1,102 +1,401 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
 
-<h1 style="
-    margin-bottom:20px;
-    font-size:28px;
-    font-weight:bold;
-    color:#111827;
-">
-    💼 Painel de Vagas
-</h1>
+{% block content %}
 
-<a href="/nova_vaga" style="
-    display:inline-block;
-    margin-bottom:25px;
-    background:#4f46e5;
-    color:white;
-    padding:10px 18px;
-    border-radius:10px;
-    text-decoration:none;
-    font-weight:500;
-    box-shadow:0 6px 18px rgba(79,70,229,0.25);
-">
-    ➕ Nova Vaga
-</a>
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
 
-<div style="
-    display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));
-    gap:20px;
-">
+<div class="page-header">
 
-    {% for vaga in vagas %}
+    <div>
 
-    <div style="
-        background:white;
-        padding:20px;
-        border-radius:14px;
-        border:1px solid #e5e7eb;
-        box-shadow:0 8px 25px rgba(0,0,0,0.05);
-    ">
+        <a
+            href="/dashboard"
+            class="page-back-link"
+            aria-label="{{ t('back_to_dashboard') }}">
+            {{ t("back_to_dashboard") }}
+        </a>
 
-        <div style="
-            font-size:18px;
-            font-weight:600;
-            color:#111827;
-            margin-bottom:6px;
-        ">
-            {{ vaga.titulo or "Sem título" }}
+        <div class="page-label" style="margin-top:18px;">
+            {{ t("talent_acquisition") }}
         </div>
 
-        <div style="
-            color:#6b7280;
-            font-size:14px;
-            margin-bottom:12px;
-        ">
-            🏢 {% if vaga.cliente %} {{ vaga.cliente.empresa or vaga.cliente.nome_contato or "Cliente sem nome" }} {% else %} Cliente não informado {% endif %}
+        <h1 class="page-title">
+            {{ t("jobs_workspace_title") }}
+        </h1>
+
+        <p class="page-description">
+            {{ t("jobs_workspace_description") }}
+        </p>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     WORKSPACE TOOLBAR
+===================================================== -->
+
+<div class="workspace-toolbar">
+
+    <div class="workspace-toolbar-left">
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="jobSearch"
+                placeholder="{{ t('search_jobs_placeholder') }}"
+                autocomplete="off">
+
         </div>
 
-        <div style="
-            display:inline-block;
-            background:#eef2ff;
-            color:#4f46e5;
-            padding:5px 10px;
-            border-radius:8px;
-            font-size:12px;
-            font-weight:500;
-            margin-bottom:12px;
-        ">
-            {{ vaga.status or "Sem status" }}
-        </div>
+    </div>
 
-        <div style="
-            font-size:12px;
-            color:#9ca3af;
-            margin-bottom:15px;
-        ">
-            Criada em: {{ vaga.data_criacao or "-" }}
-        </div>
+    <div class="workspace-toolbar-right">
 
-        <a href="/vaga/{{ vaga.id }}" style="
-            display:inline-block;
-            background:#10b981;
-            color:white;
-            padding:8px 12px;
-            border-radius:8px;
-            text-decoration:none;
-            font-size:13px;
-        ">
-            🔍 Ver detalhes
+        <a href="/nova_vaga" class="btn btn-primary">
+            {{ t("new_job") }}
         </a>
 
     </div>
 
-    {% else %}
+</div>
 
-    <p style="color:#6b7280;">Nenhuma vaga cadastrada ainda.</p>
+<!-- =====================================================
+     DASHBOARD METRICS
+===================================================== -->
 
-    {% endfor %}
+<div class="page-layout">
+
+<div>
+
+<div class="grid grid-4 mb-4">
+
+    <div class="metric-card metric-primary">
+
+        <div class="metric-label">
+            {{ t("active_jobs") }}
+        </div>
+
+        <div class="metric-value">
+            {{ vagas_ativas|length }}
+        </div>
+
+        <div class="metric-description">
+            {{ t("open_positions") }}
+        </div>
+
+    </div>
+
+    <div class="metric-card metric-success">
+
+        <div class="metric-label">
+            {{ t("talent_pool") }}
+        </div>
+
+        <div class="metric-value">
+            29
+        </div>
+
+        <div class="metric-description">
+            {{ t("available_candidates") }}
+        </div>
+
+    </div>
+
+    <div class="metric-card metric-warning">
+
+        <div class="metric-label">
+            {{ t("ai_announcements") }}
+        </div>
+
+        <div class="metric-value">
+            14
+        </div>
+
+        <div class="metric-description">
+            {{ t("generated_by_talia") }}
+        </div>
+
+    </div>
+
+    <div class="metric-card metric-danger">
+
+        <div class="metric-label">
+            {{ t("average_match") }}
+        </div>
+
+        <div class="metric-value">
+            67%
+        </div>
+
+        <div class="metric-description">
+            {{ t("ai_intelligence") }}
+        </div>
+
+    </div>
 
 </div>
+
+<!-- =====================================================
+     ACTIVE JOBS
+===================================================== -->
+
+<div class="page-header" style="margin-top:40px;">
+
+    <div>
+
+        <h2>
+            {{ t("active_jobs") }}
+        </h2>
+
+        <p class="page-description">
+
+            {{ vagas_ativas|length }}
+            {{ t("active_recruitment_processes") }}
+
+        </p>
+
+    </div>
+
+</div>
+
+<!-- =====================================================
+     JOB GRID
+===================================================== -->
+
+<div class="grid grid-3" id="jobsGrid">
+
+{% for vaga in vagas_ativas %}
+
+<div
+    class="job-card"
+    data-search="
+        {{ vaga.id }}
+        {{ vaga.titulo or '' }}
+        {% if vaga.cliente %}
+            {{ vaga.cliente.empresa or '' }}
+            {{ vaga.cliente.nome_contato or '' }}
+        {% endif %}
+    ">
+
+    <div class="job-card-header">
+
+        <div>
+
+            <h3 class="job-card-title">
+                {{ vaga.titulo or t("untitled_job") }}
+            </h3>
+
+            <p class="job-card-company">
+
+                {% if vaga.cliente %}
+
+                    {{ vaga.cliente.empresa or vaga.cliente.nome_contato or t("client_not_informed") }}
+
+                {% else %}
+
+                    {{ t("client_not_informed") }}
+
+                {% endif %}
+
+            </p>
+
+        </div>
+
+        <span class="badge badge-success">
+            {{ t("active_status") }}
+        </span>
+
+    </div>
+
+    <div class="job-card-divider"></div>
+
+    <div class="job-card-body">
+
+        <div class="job-card-info">
+
+            <strong>ID</strong>
+
+            <span>#{{ vaga.id }}</span>
+
+        </div>
+
+        <div class="job-card-info">
+
+            <strong>{{ t("created_at") }}</strong>
+
+            <span>
+
+                {% if vaga.data_criacao %}
+
+                    {{ vaga.data_criacao }}
+
+                {% else %}
+
+                    -
+
+                {% endif %}
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="job-card-footer">
+
+        <a
+            href="/vaga/{{ vaga.id }}"
+            class="btn btn-primary">
+
+            {{ t("open_workspace") }}
+
+        </a>
+
+    </div>
+
+</div>
+
+{% else %}
+
+<div class="empty-state">
+
+    <h3>
+        {{ t("no_jobs_registered") }}
+    </h3>
+
+    <p>
+        {{ t("no_jobs_registered_description") }}
+    </p>
+
+    <br>
+
+    <a
+        href="/nova_vaga"
+        class="btn btn-primary">
+
+        {{ t("new_job") }}
+
+    </a>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<!-- RESULTADO DA PESQUISA -->
+
+<div
+    id="noSearchResults"
+    class="empty-state"
+    style="display:none; margin-top:24px;">
+
+    <h3>
+        {{ t("no_jobs_found") }}
+    </h3>
+
+    <p>
+        {{ t("no_jobs_found_description") }}
+    </p>
+
+</div>
+
+</div>
+
+{% include "components/right_panel.html" %}
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.getElementById("jobSearch");
+    const jobCards = document.querySelectorAll("#jobsGrid .job-card");
+    const noSearchResults = document.getElementById("noSearchResults");
+
+    if (!searchInput) {
+        console.error("Campo jobSearch não encontrado.");
+        return;
+    }
+
+    function normalizeText(text) {
+        return String(text || "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim();
+    }
+
+    function filterJobs(goToResult = false) {
+
+        const searchTerm = normalizeText(searchInput.value);
+        let visibleJobs = 0;
+        let firstVisibleCard = null;
+
+        jobCards.forEach(function (card) {
+
+            const searchableText = normalizeText(
+                card.dataset.search + " " + card.textContent
+            );
+
+            const matches =
+                searchTerm === "" ||
+                searchableText.includes(searchTerm);
+
+            card.style.display = matches ? "" : "none";
+
+            if (matches) {
+                visibleJobs++;
+
+                if (!firstVisibleCard) {
+                    firstVisibleCard = card;
+                }
+            }
+        });
+
+        if (noSearchResults) {
+            noSearchResults.style.display =
+                searchTerm !== "" && visibleJobs === 0
+                    ? "block"
+                    : "none";
+        }
+
+        if (goToResult) {
+
+            if (firstVisibleCard) {
+                firstVisibleCard.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+
+            if (!firstVisibleCard && noSearchResults) {
+                noSearchResults.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+        }
+    }
+
+    searchInput.addEventListener("input", function () {
+        filterJobs(false);
+    });
+
+    searchInput.addEventListener("keydown", function (event) {
+
+        if (event.key === "Enter") {
+            event.preventDefault();
+            filterJobs(true);
+        }
+
+    });
+
+});
+</script>
 
 {% endblock %}

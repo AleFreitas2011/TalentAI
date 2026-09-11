@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="margin-bottom:30px;">
+
+    <h1 style="
+        margin-bottom:12px;
+        font-size:48px;
+        font-weight:800;
+        color:#111827;
+        letter-spacing:-1.5px;
+    ">
+        Vagas Encerradas
+    </h1>
+
+    <p style="
+        color:#334155;
+        font-size:18px;
+        font-weight:500;
+        margin:0;
+    ">
+        Histórico de vagas encerradas. Você pode reabrir uma vaga ou utilizá-la futuramente como base para uma nova oportunidade.
+    </p>
+
+</div>
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+">
+
+    <a href="/" class="btn-dark">
+        ← Voltar para Vagas
+    </a>
+
+    <span style="
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        min-width:36px;
+        height:36px;
+        padding:0 14px;
+        background:#6d28d9;
+        color:white;
+        border-radius:999px;
+        font-size:18px;
+        font-weight:700;
+    ">
+        {{ vagas|length }}
+    </span>
+
+</div>
+
+<div style="
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(450px,1fr));
+gap:28px;
+">
+
+{% for vaga in vagas %}
+
+<div style="
+    background:white;
+    padding:34px;
+    border-radius:18px;
+    border:1px solid #ecebff;
+    box-shadow:0 10px 30px rgba(79,70,229,.08);
+">
+
+    <div style="
+        font-size:30px;
+        font-weight:800;
+        line-height:1.35;
+        color:#111827;
+        margin-bottom:8px;
+    ">
+        {{ vaga.titulo }}
+    </div>
+
+    <div style="
+        color:#334155;
+        font-size:18px;
+        font-weight:600;
+        margin-bottom:16px;
+    ">
+        {% if vaga.cliente %}
+            {{ vaga.cliente.empresa }}
+        {% else %}
+            Cliente não informado
+        {% endif %}
+    </div>
+
+    <p style="
+        color:#64748b;
+        margin-bottom:22px;
+    ">
+        Criada em: {{ vaga.data_criacao }}
+    </p>
+
+    <div style="
+        display:flex;
+        gap:12px;
+    ">
+
+    <div style="
+        display:flex;
+        gap:12px;
+        margin-top:18px;
+        ">
+
+            <a href="/reabrir_vaga/{{ vaga.id }}"
+            class="btn-primary">
+                Reabrir
+            </a>
+
+            <a href="/duplicar_vaga/{{ vaga.id }}"
+            class="btn-dark">
+                Duplicar
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% else %}
+
+<div class="card">
+    <p>Nenhuma vaga encerrada.</p>
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

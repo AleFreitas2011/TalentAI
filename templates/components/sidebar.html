@@ -1,0 +1,76 @@
+<aside class="sidebar">
+
+    <div class="sidebar-brand">
+
+        <img
+            src="{{ url_for('static', path='img/talentai-logo.png') }}"
+            alt="TalentAI"
+            class="sidebar-logo">
+
+    </div>
+
+    <nav class="sidebar-nav">
+
+        <span class="menu-title">
+            WORKSPACE
+        </span>
+
+        <a href="/dashboard">
+            {{ t("dashboard") }}
+        </a>
+
+        <a href="/">
+            {{ t("jobs") }}
+        </a>
+
+        <a href="/careers/manage">
+            Careers
+        </a>
+
+        <a href="/banco_talentos">
+            {{ t("talent_pool") }}
+        </a>
+
+        <a href="/buscar_talentos">
+            {{ t("search") }}
+        </a>
+
+        <span class="menu-title">
+            AI
+        </span>
+
+        <a href="/dashboard#talia">
+            TALIA
+        </a>
+
+        <span class="menu-title">
+            CRM
+        </span>
+
+        <a href="/clientes">
+            {{ t("clients") }}
+        </a>
+
+        <a href="/historico_envios">
+            {{ t("history") }}
+        </a>
+
+    </nav>
+
+    <div class="sidebar-user">
+
+        <div class="avatar">
+            AF
+        </div>
+
+        <div>
+
+            <strong>Alessandra</strong>
+
+            <small>Head Recruiter</small>
+
+        </div>
+
+    </div>
+
+</aside>

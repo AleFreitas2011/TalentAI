@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width:1000px;margin:0 auto;padding:32px 20px 60px;">
+    <div style="margin-bottom:24px;">
+        <a href="/consultor/{{ candidato.id }}" style="color:#7c3aed;text-decoration:none;font-weight:700;">
+            ← {{ t("back_to_talent_pool") }}
+        </a>
+    </div>
+
+    <section style="background:white;border:1px solid #e5e7eb;border-radius:18px;padding:28px;">
+        <p style="color:#7c3aed;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;">
+            TALENTAI · TALIA
+        </p>
+
+        <h1 style="margin:0;color:#111827;font-size:30px;">
+            Analisar talento para uma vaga
+        </h1>
+
+        <p style="color:#6b7280;line-height:1.6;margin:10px 0 26px;">
+            Selecione uma vaga aberta. O TalentAI reutilizará este talento e criará somente uma nova candidatura, com análise e match próprios para a vaga escolhida.
+        </p>
+
+        <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:14px;padding:18px;margin-bottom:24px;">
+            <div style="font-size:13px;color:#7c3aed;font-weight:800;text-transform:uppercase;letter-spacing:.6px;">Talento</div>
+            <div style="font-size:20px;font-weight:800;color:#111827;margin-top:5px;">
+                {{ candidato.titulo_profissional or candidato.nome_arquivo }}
+            </div>
+            {% if candidato.email %}
+            <div style="color:#6b7280;margin-top:5px;">{{ candidato.email }}</div>
+            {% endif %}
+        </div>
+
+        {% if erro == "CV_NOT_FOUND" %}
+        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px 16px;color:#9a3412;margin-bottom:20px;">
+            O CV original deste talento não foi encontrado. Faça um novo upload do currículo no Banco de Talentos antes de executar a análise.
+        </div>
+        {% endif %}
+
+        {% if vagas %}
+        <form method="post" action="/consultor/{{ candidato.id }}/analisar-vaga">
+            <label for="vaga_id" style="display:block;font-weight:800;color:#374151;margin-bottom:8px;">
+                {{ t("jobs") }}
+            </label>
+
+            <select id="vaga_id" name="vaga_id" required style="width:100%;padding:14px;border:1px solid #d1d5db;border-radius:10px;background:white;color:#111827;font-size:15px;margin-bottom:20px;">
+                <option value="">Selecione uma vaga aberta</option>
+                {% for vaga in vagas %}
+                <option value="{{ vaga.id }}">#{{ vaga.id }} — {{ vaga.titulo }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" style="border:0;background:#7c3aed;color:white;padding:13px 20px;border-radius:10px;font-weight:800;cursor:pointer;">
+                Analisar com TALIA
+            </button>
+        </form>
+        {% else %}
+        <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:18px;color:#4b5563;">
+            Não há novas vagas abertas disponíveis para este talento. As vagas em que ele já possui candidatura foram removidas da seleção.
+        </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

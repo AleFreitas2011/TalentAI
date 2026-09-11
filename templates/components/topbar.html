@@ -1,0 +1,43 @@
+<header class="topbar">
+
+    <div class="topbar-left">
+        <!-- Intencionalmente vazio -->
+    </div>
+
+    <div class="topbar-right">
+
+        <!-- =========================
+             LANGUAGE SELECTOR
+        ========================== -->
+
+        <div class="language-selector">
+
+            <a
+                href="/language/pt-BR"
+                class="language-option {% if request.state.language == 'pt-BR' %}active{% endif %}">
+                PT
+            </a>
+
+            <span class="language-divider">
+                |
+            </span>
+
+            <a
+                href="/language/en-US"
+                class="language-option {% if request.state.language == 'en-US' %}active{% endif %}">
+                EN
+            </a>
+
+        </div>
+
+        <!-- =========================
+             LOGOUT
+        ========================== -->
+
+        <a href="/logout" class="btn btn-outline">
+            {{ t("logout") }}
+        </a>
+
+    </div>
+
+</header>

@@ -1,0 +1,365 @@
+/* =====================================================
+   TalentAI Workspace v2.0
+   ===================================================== */
+
+
+/* =====================================================
+   WORKSPACE
+===================================================== */
+
+.workspace{
+
+    width:100%;
+    max-width:1800px;
+
+    margin:0 auto;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:40px;
+
+    padding-bottom:60px;
+
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.workspace-hero{
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:#ffffff;
+
+    border:1px solid var(--color-border);
+
+    border-radius:28px;
+
+    padding:48px;
+
+    box-shadow:0 15px 40px rgba(15,23,42,.06);
+
+}
+
+
+/* efeito decorativo */
+
+.workspace-hero::after{
+
+    content:"";
+
+    position:absolute;
+
+    right:-120px;
+    top:-120px;
+
+    width:340px;
+    height:340px;
+
+    border-radius:50%;
+
+    background:linear-gradient(
+        135deg,
+        rgba(37,99,235,.05),
+        rgba(124,58,237,.08)
+    );
+
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.workspace-header{
+
+    position:relative;
+
+    z-index:2;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    flex-wrap:wrap;
+
+    gap:40px;
+
+}
+
+
+/* =====================================================
+   HERO INFO
+===================================================== */
+
+.workspace-info{
+
+    flex:1;
+
+    min-width:320px;
+
+}
+
+
+/* =====================================================
+   LABEL
+===================================================== */
+
+.workspace-label{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:8px 18px;
+
+    border-radius:999px;
+
+    background:rgba(37,99,235,.08);
+
+    color:var(--color-primary);
+
+    font-size:13px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    text-transform:uppercase;
+
+}
+
+
+/* =====================================================
+   TITLE
+===================================================== */
+
+.workspace-title{
+
+    margin-top:18px;
+
+    font-size:48px;
+
+    font-weight:800;
+
+    color:var(--color-text);
+
+    line-height:1.15;
+
+}
+
+
+/* =====================================================
+   CLIENT
+===================================================== */
+
+.workspace-client{
+
+    margin-top:10px;
+
+    font-size:22px;
+
+    color:var(--color-text-light);
+
+    font-weight:600;
+
+}
+
+
+/* =====================================================
+   META
+===================================================== */
+
+.workspace-meta{
+
+    margin-top:28px;
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+}
+
+
+/* =====================================================
+   BADGES
+===================================================== */
+
+.ta-badge{
+
+    padding:10px 16px;
+
+    border-radius:999px;
+
+    background:#F8FAFC;
+
+    border:1px solid var(--color-border);
+
+    color:var(--color-text);
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.workspace-actions{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:14px;
+
+    align-items:center;
+
+}
+
+
+/* =====================================================
+   INTELLIGENCE GRID
+===================================================== */
+
+.intelligence-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,minmax(0,1fr));
+
+    gap:24px;
+
+}
+
+
+/* =====================================================
+   TALENTAI WIDGET
+===================================================== */
+
+.ta-widget{
+
+    position:relative;
+
+    background:#ffffff;
+
+    border:1px solid var(--color-border);
+
+    border-radius:24px;
+
+    padding:32px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+    transition:.25s ease;
+
+    box-shadow:0 10px 30px rgba(15,23,42,.04);
+
+}
+
+
+.ta-widget::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    width:100%;
+    height:4px;
+
+    border-radius:24px 24px 0 0;
+
+    background:linear-gradient(
+        90deg,
+        var(--color-primary),
+        var(--color-secondary)
+    );
+
+}
+
+
+.ta-widget:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 20px 45px rgba(15,23,42,.08);
+
+}
+
+
+/* =====================================================
+   WIDGET ICON
+===================================================== */
+
+.ta-widget-icon{
+
+    width:68px;
+    height:68px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:18px;
+
+    background:linear-gradient(
+        135deg,
+        rgba(37,99,235,.08),
+        rgba(124,58,237,.10)
+    );
+
+    font-size:28px;
+
+    color:var(--color-primary);
+
+}
+
+
+/* =====================================================
+   WIDGET VALUE
+===================================================== */
+
+.ta-widget-value{
+
+    font-size:42px;
+
+    font-weight:800;
+
+    color:var(--color-text);
+
+}
+
+
+/* =====================================================
+   WIDGET LABEL
+===================================================== */
+
+.ta-widget-label{
+
+    color:var(--color-text-light);
+
+    font-size:16px;
+
+    font-weight:600;
+
+}

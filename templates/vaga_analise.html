@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% block content %}
 
-<h1>🤖 Análise da Vaga</h1>
+<h1> Análise da Vaga</h1>
 
 <br>
 
@@ -18,7 +18,7 @@
     border-radius:12px;
     margin-bottom:20px;
 ">
-    <h3>🧠 Resumo Inteligente</h3>
+    <h3> Resumo Inteligente</h3>
     <p>{{ resumo }}</p>
 </div>
 
@@ -27,7 +27,7 @@
     padding:20px;
     border-radius:12px;
 ">
-    <h3>🔑 Palavras-chave</h3>
+    <h3> Palavras-chave</h3>
 
     {% for p in palavras %}
     <span style="
@@ -49,7 +49,7 @@
 
 <hr style="margin:30px 0;">
 
-<h3>🚀 Analisar CVs com IA</h3>
+<h3> Analisar CVs com IA</h3>
 
 <form action="/analisar_cvs/{{ vaga.id }}" method="post" enctype="multipart/form-data">
 
@@ -65,7 +65,7 @@
         border-radius:8px;
         cursor:pointer;
     ">
-        🚀 Rodar análise com IA
+         Rodar análise com IA
     </button>
 
 </form>

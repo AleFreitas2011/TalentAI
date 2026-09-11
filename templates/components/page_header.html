@@ -1,0 +1,30 @@
+<div class="page-header">
+
+    <div class="page-header-content">
+
+        <h1 class="page-title">
+            {{ page_title }}
+        </h1>
+
+        <p class="page-subtitle">
+            {{ page_description }}
+        </p>
+
+    </div>
+
+    {% if page_button_url %}
+
+    <div class="page-header-actions">
+
+        <a
+            href="{{ page_button_url }}"
+            class="btn btn-primary"
+        >
+            {{ page_button_text }}
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>

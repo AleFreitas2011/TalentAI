@@ -1,6 +1,10 @@
-{% extends "base.html" %} {% block content %} {% if request.query_params.get("sucesso") %}
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if request.query_params.get("sucesso") %}
 <div class="alert-success">
-    Candidatos enviados com sucesso!
+    {{ t("candidates_sent_successfully") }}
 </div>
 {% endif %}
 
@@ -9,21 +13,21 @@
         max-width: 1100px;
         margin: auto;
     }
-    
+
     .header {
         margin-bottom: 25px;
     }
-    
+
     .title {
         font-size: 28px;
         font-weight: 700;
     }
-    
+
     .subtitle {
         color: #6b7280;
         margin-top: 4px;
     }
-    
+
     .card {
         background: white;
         padding: 20px;
@@ -33,50 +37,55 @@
         border: 1px solid #eee;
         transition: all 0.2s ease;
     }
-    
+
     .card:hover {
         transform: translateY(-2px);
     }
-    
+
+    .cv-error {
+        border-left: 4px solid #ef4444;
+        background: #fef2f2;
+    }
+
     .top {
         border-left: 6px solid #7c3aed;
     }
-    
+
     .score {
         font-weight: bold;
         padding: 6px 10px;
         border-radius: 8px;
         font-size: 12px;
     }
-    
+
     .high {
         background: #dcfce7;
         color: #166534;
     }
-    
+
     .mid {
         background: #fef9c3;
         color: #854d0e;
     }
-    
+
     .low {
         background: #fee2e2;
         color: #991b1b;
     }
-    
+
     .progress {
         height: 6px;
         background: #eee;
         border-radius: 6px;
         margin-top: 6px;
     }
-    
+
     .bar {
         height: 6px;
         border-radius: 6px;
         background: linear-gradient(90deg, #7c3aed, #ec4899);
     }
-    
+
     .btn-primary {
         background: linear-gradient(90deg, #7c3aed, #ec4899);
         color: white;
@@ -86,7 +95,7 @@
         font-weight: 600;
         cursor: pointer;
     }
-    
+
     .btn-secondary {
         background: linear-gradient(90deg, #2563eb, #7c3aed);
         color: white;
@@ -95,7 +104,7 @@
         text-decoration: none;
         font-weight: 600;
     }
-    
+
     .btn-whatsapp {
         background: #10b981;
         color: white;
@@ -104,7 +113,7 @@
         font-size: 12px;
         text-decoration: none;
     }
-    
+
     .alert-success {
         background: #dcfce7;
         color: #166534;
@@ -113,32 +122,121 @@
         margin-bottom: 15px;
         font-weight: bold;
     }
+
+    .job-description {
+        margin-top: 12px;
+        color: #374151;
+        line-height: 1.7;
+    }
+
+    .job-description h3 {
+        margin: 22px 0 10px;
+        font-size: 17px;
+        color: #111827;
+    }
+
+    .job-description p {
+        margin: 8px 0;
+    }
+
+    .job-description ul {
+        margin: 8px 0 14px 22px;
+        padding: 0;
+    }
+
+    .job-description li {
+        margin: 5px 0;
+    }
 </style>
 
 <div class="page">
 
-    <!-- HEADER -->
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
     <div class="header">
 
         <div class="title">
             {{ vaga.titulo }}
         </div>
 
-        <div style="margin-top:12px;">
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
 
             <a href="/fechar_vaga/{{ vaga.id }}" style="
-          background:#eef2ff;
-          color:#4f46e5;
-          padding:8px 14px;
-          border-radius:8px;
-          text-decoration:none;
-          font-size:14px;
-          font-weight:600;
-          border:1px solid #c7d2fe;
-          display:inline-block;
-       ">
-       Encerrar vaga
-    </a>
+                background:#eef2ff;
+                color:#4f46e5;
+                padding:8px 14px;
+                border-radius:8px;
+                text-decoration:none;
+                font-size:14px;
+                font-weight:600;
+                border:1px solid #c7d2fe;
+                display:inline-block;
+            ">
+                {{ t("close_job") }}
+            </a>
+
+            <a href="/editar_vaga/{{ vaga.id }}" style="
+                background:#2563eb;
+                color:white;
+                padding:8px 14px;
+                border-radius:8px;
+                text-decoration:none;
+                font-size:14px;
+                font-weight:600;
+                display:inline-block;
+            ">
+                {{ t("edit_job") }}
+            </a>
+
+            <a href="/gerar_anuncio_ia/{{ vaga.id }}" style="
+                background:linear-gradient(90deg,#7c3aed,#ec4899);
+                color:white;
+                padding:8px 14px;
+                border-radius:8px;
+                text-decoration:none;
+                font-size:14px;
+                font-weight:600;
+                display:inline-block;
+            ">
+                {{ t("generate_ai_announcement") }}
+            </a>
+
+            <a
+                href="/careers/job/{{ vaga.id }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="
+                    background:#f3e8ff;
+                    color:#7c3aed;
+                    padding:8px 14px;
+                    border-radius:8px;
+                    text-decoration:none;
+                    font-size:14px;
+                    font-weight:600;
+                    border:1px solid #ddd6fe;
+                    display:inline-block;
+                ">
+                {{ t("view_public_job") }}
+            </a>
+
+            <button
+                type="button"
+                onclick="copiarLinkPublico({{ vaga.id }}, this)"
+                style="
+                    background:white;
+                    color:#7c3aed;
+                    padding:8px 14px;
+                    border-radius:8px;
+                    font-size:14px;
+                    font-weight:600;
+                    border:1px solid #c4b5fd;
+                    cursor:pointer;
+                    display:inline-block;
+                ">
+                {{ t("copy_public_link") }}
+            </button>
 
         </div>
 
@@ -148,98 +246,613 @@
 
     </div>
 
-    <!-- DESCRIÇÃO -->
+    <!-- =====================================================
+         DESCRIPTION
+    ====================================================== -->
+
     <div class="card">
-        <b>Descrição</b>
-        <p style="margin-top:8px;">{{ vaga.descricao }}</p>
-    </div>
 
-    <!-- ANALISAR CVS -->
-    <div class="card">
-        <form action="/analisar_cvs/{{ vaga.id }}" method="post" enctype="multipart/form-data">
-            <input type="file" name="arquivos" multiple required>
-            <br><br>
-            <button class="btn-primary">
-                Analisar CVs com IA
-            </button>
-        </form>
-    </div>
+        <b>{{ t("job_description") }}</b>
 
-
-    <!-- LISTA -->
-    <h2>Ranking de Candidatos</h2>
-    <p>Total: {{ candidatos|length }}</p>
-
-    <!-- FORM CORRETO -->
-    <form method="post" action="/enviar_cliente/{{ vaga.id }}">
-
-        <!-- CLIENTE (APENAS UMA VEZ) -->
-        <input type="hidden" name="cliente_id" value="{{ vaga.cliente.id }}">
-
-        <!-- 🌎 IDIOMA -->
-        <div style="margin-bottom:15px; padding:10px; background:#f9fafb; border-radius:8px;">
-            <label style="font-weight:600; font-size:14px;">
-            Idioma do email:
-        </label>
-
-            <br><br>
-
-            <label style="margin-right:20px;">
-            <input type="radio" name="idioma" value="PT" checked>
-            Português
-        </label>
-
-            <label>
-            <input type="radio" name="idioma" value="EN">
-            English
-        </label>
+        <div
+            id="jobDescription"
+            class="job-description"
+            data-description="{{ vaga.descricao | e }}">
         </div>
 
-        <input type="hidden" name="cliente_id" value="{{ vaga.cliente.id }}"> {% for c in candidatos %} {% set score = c.score or 0 %}
+    </div>
 
-        <div class="card {% if loop.index == 1 %}top{% endif %}">
+    <!-- =====================================================
+         ANALYZE RESUMES
+    ====================================================== -->
 
-            <div style="display:flex; gap:10px; align-items:flex-start;">
+    <div class="card">
 
-                <input type="checkbox" name="candidatos_ids" value="{{ c.id }}" style="margin-top:5px;">
+        <form
+            action="/analisar_cvs/{{ vaga.id }}"
+            method="post"
+            enctype="multipart/form-data">
+
+            <div style="
+                display:flex;
+                align-items:center;
+                gap:12px;
+                flex-wrap:wrap;
+                margin-bottom:20px;
+            ">
+
+                <label
+                    for="resumeFiles"
+                    style="
+                        display:inline-block;
+                        background:#f8fafc;
+                        color:#334155;
+                        padding:10px 16px;
+                        border:1px solid #d1d5db;
+                        border-radius:8px;
+                        font-size:14px;
+                        font-weight:600;
+                        cursor:pointer;
+                    ">
+                    {{ t("choose_files") }}
+                </label>
+
+                <span
+                    id="resumeFileLabel"
+                    style="
+                        color:#64748b;
+                        font-size:14px;
+                    ">
+                    {{ t("no_files_selected") }}
+                </span>
+
+                <input
+                    id="resumeFiles"
+                    type="file"
+                    name="arquivos"
+                    multiple
+                    required
+                    style="display:none;">
+
+            </div>
+
+            <button
+                type="submit"
+                class="btn-primary">
+                {{ t("analyze_resumes_ai") }}
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- =====================================================
+         CANDIDATE RANKING
+    ====================================================== -->
+
+    <h2>
+        {{ t("candidate_ranking") }}
+    </h2>
+
+    <p>
+        {{ t("total") }}: {{ candidatos|length }}
+    </p>
+
+    <!-- =====================================================
+         METRICS
+    ====================================================== -->
+
+    <div style="
+        display:grid;
+        grid-template-columns:repeat(4,1fr);
+        gap:18px;
+        margin-bottom:25px;
+    ">
+
+        <div class="card">
+
+            <div style="font-size:13px;color:#6b7280;">
+                {{ t("candidates") }}
+            </div>
+
+            <div style="
+                font-size:34px;
+                font-weight:700;
+                color:#4f46e5;
+            ">
+                {{ candidatos|length }}
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div style="font-size:13px;color:#6b7280;">
+                {{ t("top_matches") }}
+            </div>
+
+            <div style="
+                font-size:34px;
+                font-weight:700;
+                color:#16a34a;
+            ">
+                {{ candidatos|selectattr('score', 'ge', 80)|list|length }}
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div style="font-size:13px;color:#6b7280;">
+                {{ t("sent") }}
+            </div>
+
+            <div style="
+                font-size:34px;
+                font-weight:700;
+                color:#ec4899;
+            ">
+                {{ candidatos|selectattr('etapa', 'equalto', 'Enviado')|list|length }}
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div style="font-size:13px;color:#6b7280;">
+                {{ t("client") }}
+            </div>
+
+            <div style="
+                font-size:18px;
+                font-weight:600;
+                color:#111827;
+            ">
+                {{ vaga.cliente.empresa }}
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+         SEND TO CLIENT
+    ====================================================== -->
+
+    <form
+        method="post"
+        action="/enviar_cliente/{{ vaga.id }}"
+        id="form-email">
+
+        <input
+            type="hidden"
+            name="cliente_id"
+            value="{{ vaga.cliente.id }}">
+
+        <!-- EMAIL LANGUAGE -->
+
+        <div style="
+            margin-bottom:15px;
+            padding:10px;
+            background:#f9fafb;
+            border-radius:8px;
+        ">
+
+            <label style="font-weight:600; font-size:14px;">
+                {{ t("email_language") }}:
+            </label>
+
+            <br><br>
+
+            <div style="
+                display:flex;
+                gap:24px;
+                margin-top:12px;
+            ">
+
+                <label style="
+                    display:flex;
+                    align-items:center;
+                    gap:8px;
+                    font-weight:500;
+                    cursor:pointer;
+                ">
+
+                    <input
+                        type="radio"
+                        name="idioma"
+                        value="PT"
+                        checked
+                        style="
+                            width:16px;
+                            height:16px;
+                            accent-color:#7c3aed;
+                        "
+                    >
+
+                    {{ t("portuguese") }}
+
+                </label>
+
+                <label style="
+                    display:flex;
+                    align-items:center;
+                    gap:8px;
+                    font-weight:500;
+                    cursor:pointer;
+                ">
+
+                    <input
+                        type="radio"
+                        name="idioma"
+                        value="EN"
+                        style="
+                            width:16px;
+                            height:16px;
+                            accent-color:#7c3aed;
+                        "
+                    >
+
+                    English
+
+                </label>
+
+            </div>
+
+        </div>
+
+        <!-- =====================================================
+             CANDIDATES
+        ====================================================== -->
+
+        {% for c in candidatos %}
+
+        {% set score = c.score or 0 %}
+
+        <div class="
+            card
+            {% if loop.index == 1 %}top{% endif %}
+            {% if 'CV não legível' in c.resumo %}cv-error{% endif %}
+        ">
+
+            <div style="
+                display:grid;
+                grid-template-columns:40px 1fr;
+                gap:18px;
+                align-items:start;
+            ">
+
+                <input
+                    type="checkbox"
+                    name="candidatos_ids"
+                    value="{{ c.id }}"
+                    style="margin-top:5px;">
 
                 <div style="flex:1;">
 
-                    <div style="display:flex; justify-content:space-between;">
-                        <strong>
-                            {% if loop.index == 1 %}Top • {% endif %}
-                            {{ c.nome_arquivo }}
-                        </strong> {% if score >= 70 %}
-                        <span class="score high">{{ score }}%</span> {% elif score >= 50 %}
-                        <span class="score mid">{{ score }}%</span> {% else %}
-                        <span class="score low">{{ score }}%</span> {% endif %}
+                    <!-- CANDIDATE HEADER -->
+
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:flex-start;
+                        gap:16px;
+                    ">
+
+                        <div style="flex:1; min-width:0;">
+
+                            <!-- ORIGIN / TALIA STATUS -->
+
+                            <div style="
+                                display:flex;
+                                align-items:center;
+                                gap:8px;
+                                flex-wrap:wrap;
+                                margin-bottom:8px;
+                            ">
+
+                                {% if c.origem == "TalentAI Careers" %}
+
+                                    <span style="
+                                        display:inline-block;
+                                        background:#f3e8ff;
+                                        color:#7c3aed;
+                                        padding:5px 9px;
+                                        border-radius:999px;
+                                        font-size:10px;
+                                        font-weight:800;
+                                        letter-spacing:0.5px;
+                                    ">
+                                        {{ t("application_via_careers") }}
+                                    </span>
+
+                                {% endif %}
+
+                                {% if c.dados_ia or c.score is not none %}
+
+                                    <span style="
+                                        display:inline-block;
+                                        background:#ecfdf5;
+                                        color:#047857;
+                                        padding:5px 9px;
+                                        border-radius:999px;
+                                        font-size:10px;
+                                        font-weight:800;
+                                        letter-spacing:0.5px;
+                                    ">
+                                        {{ t("talia_analyzed") }}
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                            <!-- CANDIDATE NAME / FILE -->
+
+                            <strong style="
+                                display:block;
+                                color:#111827;
+                                font-size:15px;
+                                overflow-wrap:anywhere;
+                            ">
+
+                                {% if loop.index == 1 %}
+                                    {{ t("top_candidate") }} •
+                                {% endif %}
+
+                                {{ c.nome_arquivo }}
+
+                            </strong>
+
+                            {% if c.titulo_profissional %}
+
+                                <div style="
+                                    margin-top:5px;
+                                    color:#64748b;
+                                    font-size:13px;
+                                ">
+                                    {{ c.titulo_profissional }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                        <!-- SCORE -->
+
+                        <div style="flex-shrink:0;">
+
+                            {% if 'CV não legível' not in (c.resumo or '') %}
+
+                                {% if score >= 70 %}
+
+                                    <span class="score high">
+                                        {{ score }}%
+                                    </span>
+
+                                {% elif score >= 50 %}
+
+                                    <span class="score mid">
+                                        {{ score }}%
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="score low">
+                                        {{ score }}%
+                                    </span>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <span style="
+                                    background:#fee2e2;
+                                    color:#991b1b;
+                                    padding:6px 10px;
+                                    border-radius:8px;
+                                    font-size:12px;
+                                    font-weight:700;
+                                ">
+                                    {{ t("pdf_without_text") }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
                     </div>
+
+                    <!-- MATCH BAR -->
 
                     <div class="progress">
-                        <div class="bar" style="width: {{ score }}%"></div>
+
+                        <div
+                            class="bar"
+                            style="width: {{ score }}%">
+                        </div>
+
                     </div>
 
+                    <!-- =====================================================
+                         PIPELINE STAGE
+                         IMPORTANT:
+                         values remain in Portuguese because they are
+                         internal values used by the backend/database.
+                    ====================================================== -->
+
+                    <select
+                        onchange="
+                            event.preventDefault();
+                            alterarEtapa({{ c.id }}, this.value);
+                            return false;
+                        "
+                        style="
+                            padding:6px 10px;
+                            border-radius:8px;
+                            border:1px solid #d1d5db;
+                            font-size:13px;
+                            margin-top:12px;
+                        "
+                    >
+
+                        <option
+                            value="Mapeado"
+                            {% if c.etapa == "Mapeado" %}selected{% endif %}>
+                            {{ t("stage_mapped") }}
+                        </option>
+
+                        <option
+                            value="Contato"
+                            {% if c.etapa == "Contato" %}selected{% endif %}>
+                            {{ t("stage_contact") }}
+                        </option>
+
+                        <option
+                            value="Entrevista"
+                            {% if c.etapa == "Entrevista" %}selected{% endif %}>
+                            {{ t("stage_interview") }}
+                        </option>
+
+                        <option
+                            value="Cliente"
+                            {% if c.etapa == "Cliente" %}selected{% endif %}>
+                            {{ t("stage_client") }}
+                        </option>
+
+                        <option
+                            value="Aprovado"
+                            {% if c.etapa == "Aprovado" %}selected{% endif %}>
+                            {{ t("stage_approved") }}
+                        </option>
+
+                        <option
+                            value="Reprovado"
+                            {% if c.etapa == "Reprovado" %}selected{% endif %}>
+                            {{ t("stage_rejected") }}
+                        </option>
+
+                    </select>
+
+                    <!-- SUMMARY -->
+
                     <p style="margin-top:10px;">
-                        <b>Resumo:</b><br> {{ c.resumo or "Sem resumo" }}
+
+                        <b>{{ t("summary") }}:</b>
+
+                        <br>
+
+                        {{ c.resumo or t("no_summary") }}
+
                     </p>
+
+                    <!-- SKILLS FOUND -->
 
                     {% if c.skills_extraidas %}
-                    <p style="margin-top:10px; color:#166534;">
-                        <b>Skills encontradas:</b><br> {{ c.skills_extraidas }}
+
+                    <p style="
+                        margin-top:10px;
+                        color:#166534;
+                    ">
+
+                        <b>
+                            {{ t("skills_found_label") }}:
+                        </b>
+
+                        <br>
+
+                        {{ c.skills_extraidas }}
+
                     </p>
-                    {% endif %} {% if c.skills_faltantes %}
-                    <p style="margin-top:10px; color:#dc2626;">
-                        <b>Skills faltantes:</b><br> {{ c.skills_faltantes }}
-                    </p>
+
                     {% endif %}
 
-                    <p><b>Email:</b> {{ c.email or "Não encontrado" }}</p>
-                    <p><b>Telefone:</b> {{ c.telefone or "Não encontrado" }}</p>
+                    <!-- MISSING SKILLS -->
 
-                    <div style="margin-top:10px;">
-                        <a href="/whatsapp_candidato/{{ vaga.id }}/{{ c.id }}" class="btn-whatsapp">
-                            WhatsApp
+                    {% if c.skills_faltantes %}
+
+                    <p style="
+                        margin-top:10px;
+                        color:#dc2626;
+                    ">
+
+                        <b>
+                            {{ t("missing_skills_label") }}:
+                        </b>
+
+                        <br>
+
+                        {{ c.skills_faltantes }}
+
+                    </p>
+
+                    {% endif %}
+
+                    <!-- CONTACT -->
+
+                    <p>
+
+                        <b>{{ t("email") }}:</b>
+
+                        {{ c.email or t("not_found") }}
+
+                    </p>
+
+                    <p>
+
+                        <b>{{ t("phone") }}:</b>
+
+                        {{ c.telefone or t("not_found") }}
+
+                    </p>
+
+                    <!-- ACTIONS -->
+
+                    <div style="
+                        display:flex;
+                        gap:10px;
+                        margin-top:12px;
+                    ">
+
+                        <a
+                            href="/consultor/{{ c.id }}"
+                            class="btn-secondary">
+
+                            {{ t("consultant_360") }}
+
                         </a>
+
+                        <a
+                            href="/whatsapp_candidato/{{ vaga.id }}/{{ c.id }}"
+                            class="btn-whatsapp">
+
+                            WhatsApp
+
+                        </a>
+
+                        <form
+                            method="post"
+                            action="/vaga/{{ vaga.id }}/candidato/{{ c.id }}/reanalisar"
+                            style="display:inline; margin:0;"
+                            onsubmit="return confirm('Reanalisar este talento com a TALIA para esta vaga?');"
+                        >
+                            <button
+                                type="submit"
+                                style="
+                                    background:#f3e8ff;
+                                    color:#7c3aed;
+                                    padding:6px 10px;
+                                    border-radius:6px;
+                                    font-size:12px;
+                                    font-weight:700;
+                                    border:1px solid #ddd6fe;
+                                    cursor:pointer;
+                                "
+                            >
+                                Reanalisar com TALIA
+                            </button>
+                        </form>
+
                     </div>
 
                 </div>
@@ -252,18 +865,178 @@
 
         <br>
 
-        <button type="submit" class="btn-primary">
-            Gerar email com selecionados
+        <button
+            type="submit"
+            class="btn-primary">
+
+            {{ t("generate_email_selected") }}
+
         </button>
 
     </form>
 
     <br>
 
-    <a href="/" style="color:#7c3aed; text-decoration:none;">
-        ← Voltar
+    <a
+        href="/"
+        style="
+            color:#7c3aed;
+            text-decoration:none;
+        ">
+
+        {{ t("back") }}
+
     </a>
 
 </div>
+
+<script>
+
+function renderJobDescription() {
+
+    const container = document.getElementById("jobDescription");
+
+    if (!container) {
+        return;
+    }
+
+    const rawText = container.dataset.description || "";
+    const lines = rawText.replace(/\r\n/g, "\n").split("\n");
+
+    let currentList = null;
+
+    function appendInlineMarkdown(parent, text) {
+
+        const parts = text.split(/(\*\*[^*]+\*\*)/g);
+
+        parts.forEach(function (part) {
+
+            if (part.startsWith("**") && part.endsWith("**") && part.length > 4) {
+                const strong = document.createElement("strong");
+                strong.textContent = part.slice(2, -2);
+                parent.appendChild(strong);
+            } else if (part) {
+                parent.appendChild(document.createTextNode(part));
+            }
+        });
+    }
+
+    lines.forEach(function (originalLine) {
+
+        const line = originalLine.trim();
+
+        if (!line) {
+            currentList = null;
+            return;
+        }
+
+        if (line.startsWith("### ")) {
+            currentList = null;
+            const heading = document.createElement("h3");
+            appendInlineMarkdown(heading, line.slice(4));
+            container.appendChild(heading);
+            return;
+        }
+
+        if (line.startsWith("* ")) {
+
+            if (!currentList) {
+                currentList = document.createElement("ul");
+                container.appendChild(currentList);
+            }
+
+            const item = document.createElement("li");
+            appendInlineMarkdown(item, line.slice(2));
+            currentList.appendChild(item);
+            return;
+        }
+
+        currentList = null;
+
+        const paragraph = document.createElement("p");
+        appendInlineMarkdown(paragraph, line);
+        container.appendChild(paragraph);
+    });
+}
+
+renderJobDescription();
+
+function alterarEtapa(candidatoId, etapa) {
+
+    const form = document.createElement("form");
+
+    form.method = "POST";
+
+    form.action = `/alterar_etapa/${candidatoId}`;
+
+    const input = document.createElement("input");
+
+    input.type = "hidden";
+
+    input.name = "etapa";
+
+    input.value = etapa;
+
+    form.appendChild(input);
+
+    document.body.appendChild(form);
+
+    form.submit();
+}
+
+
+async function copiarLinkPublico(vagaId, button) {
+
+    const publicUrl =
+        `${window.location.origin}/careers/job/${vagaId}`;
+
+    try {
+
+        await navigator.clipboard.writeText(publicUrl);
+
+        const originalText = button.textContent;
+
+        button.textContent = "✓";
+
+        setTimeout(function () {
+            button.textContent = originalText;
+        }, 1200);
+
+    } catch (error) {
+
+        window.prompt(
+            "{{ t('copy_public_link') }}:",
+            publicUrl
+        );
+
+    }
+}
+
+
+const resumeFiles = document.getElementById("resumeFiles");
+const resumeFileLabel = document.getElementById("resumeFileLabel");
+
+if (resumeFiles && resumeFileLabel) {
+
+    resumeFiles.addEventListener("change", function () {
+
+        const files = Array.from(this.files);
+
+        if (files.length === 0) {
+            resumeFileLabel.textContent = "{{ t('no_files_selected') }}";
+            return;
+        }
+
+        if (files.length === 1) {
+            resumeFileLabel.textContent = files[0].name;
+            return;
+        }
+
+        resumeFileLabel.textContent =
+            files.length + " {{ t('files_selected') }}";
+    });
+}
+
+</script>
 
 {% endblock %}

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="{{ 'pt-BR' if request.session.get('language', 'pt-BR') == 'pt-BR' else 'en' }}">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>{{ vaga.titulo }} · TalentAI Careers</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #fafaff 0%,
+                    #ffffff 45%,
+                    #faf7ff 100%
+                );
+
+            color: #111827;
+            min-height: 100vh;
+        }
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .public-header {
+            height: 76px;
+            background: rgba(255,255,255,0.96);
+            border-bottom: 1px solid #eeeaf7;
+
+            display: flex;
+            align-items: center;
+        }
+
+        .header-container {
+            width: min(1180px, calc(100% - 40px));
+            margin: auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+        }
+
+        .brand {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -1px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #7c3aed,
+                    #ec4899
+                );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+            text-decoration: none;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        /* =====================================================
+           LANGUAGE
+        ===================================================== */
+
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+
+            padding: 4px;
+        }
+
+        .language-switcher a {
+            display: block;
+            padding: 6px 9px;
+            border-radius: 7px;
+
+            color: #64748b;
+            text-decoration: none;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .language-switcher a.active {
+            background: white;
+            color: #7c3aed;
+
+            box-shadow:
+                0 2px 8px rgba(76,29,149,.10);
+        }
+
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
+        .container {
+            width: min(1000px, calc(100% - 40px));
+            margin: auto;
+            padding: 48px 0 90px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 34px;
+
+            color: #7c3aed;
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 650;
+        }
+
+        .job-header {
+            margin-bottom: 32px;
+        }
+
+        .job-label {
+            display: inline-block;
+
+            margin-bottom: 14px;
+
+            color: #7c3aed;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .job-header h1 {
+            max-width: 800px;
+
+            font-size: clamp(32px, 5vw, 48px);
+            line-height: 1.12;
+            letter-spacing: -1.5px;
+        }
+
+        .company {
+            margin-top: 13px;
+
+            color: #64748b;
+            font-size: 17px;
+        }
+
+        /* =====================================================
+           META
+        ===================================================== */
+
+        .job-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+
+            margin-top: 24px;
+        }
+
+        .tag {
+            background: white;
+
+            border: 1px solid #e2e8f0;
+            border-radius: 999px;
+
+            padding: 8px 12px;
+
+            color: #475569;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* =====================================================
+           CONTENT
+        ===================================================== */
+
+        .job-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 290px;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .content-card,
+        .apply-card {
+            background: white;
+
+            border: 1px solid #ece8f4;
+            border-radius: 18px;
+
+            box-shadow:
+                0 8px 30px rgba(30,41,59,.04);
+        }
+
+        .content-card {
+            padding: 30px;
+        }
+
+        .content-card h2 {
+            margin-bottom: 22px;
+            font-size: 21px;
+        }
+
+        .description {
+            color: #475569;
+            font-size: 15px;
+            line-height: 1.8;
+
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        /* =====================================================
+           APPLY
+        ===================================================== */
+
+        .apply-card {
+            padding: 25px;
+
+            position: sticky;
+            top: 25px;
+        }
+
+        .apply-card h3 {
+            font-size: 18px;
+            margin-bottom: 9px;
+        }
+
+        .apply-card p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+
+            margin-bottom: 20px;
+        }
+
+        .apply-button {
+            display: block;
+            width: 100%;
+
+            padding: 13px 16px;
+
+            border: 0;
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #7c3aed,
+                    #ec4899
+                );
+
+            color: white;
+
+            text-align: center;
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 750;
+
+            cursor: pointer;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+            border-top: 1px solid #eeeaf7;
+
+            padding: 30px 20px;
+
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 780px) {
+
+            .job-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .apply-card {
+                position: static;
+            }
+
+            .container {
+                padding-top: 32px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="public-header">
+
+    <div class="header-container">
+
+        <a
+            href="/careers"
+            class="brand">
+            TalentAI
+        </a>
+
+        <div class="header-actions">
+
+            <div class="language-switcher">
+
+                <a
+                    href="/language/pt-BR"
+                    class="{% if request.session.get('language', 'pt-BR') == 'pt-BR' %}active{% endif %}">
+                    PT
+                </a>
+
+                <a
+                    href="/language/en-US"
+                    class="{% if request.session.get('language') == 'en-US' %}active{% endif %}">
+                    EN
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     JOB
+===================================================== -->
+
+<main class="container">
+
+    <a
+        href="/careers"
+        class="back-link">
+        ← {{ t("career_back_opportunities") }}
+    </a>
+
+
+    <section class="job-header">
+
+        <div class="job-label">
+            {{ t("career_job_opportunity") }}
+        </div>
+
+        <h1>
+            {{ vaga.titulo }}
+        </h1>
+
+        {% if vaga.cliente %}
+
+        <div class="company">
+            {{ vaga.cliente.empresa or vaga.cliente.nome_contato }}
+        </div>
+
+        {% endif %}
+
+
+        <div class="job-meta">
+
+            <span class="tag">
+                #{{ vaga.id }}
+            </span>
+
+            <span class="tag">
+                {{ t("career_job_status") }}:
+                {{ t("career_job_open") }}
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <div class="job-layout">
+
+
+        <!-- DESCRIPTION -->
+
+        <section class="content-card">
+
+            <h2>
+                {{ t("career_job_description") }}
+            </h2>
+
+            <div class="description">
+                {{ vaga.descricao or "-" }}
+            </div>
+
+        </section>
+
+
+        <!-- APPLY -->
+
+        <aside class="apply-card">
+
+            <h3>
+                {{ t("career_apply") }}
+            </h3>
+
+            <p>
+                {{ t("career_apply_description") }}
+            </p>
+
+            <a
+                href="/careers/job/{{ vaga.id }}/apply"
+                class="apply-button">
+                {{ t("career_apply") }}
+            </a>
+
+        </aside>
+
+
+    </div>
+
+</main>
+
+
+<footer>
+    © TalentAI · {{ t("careers_footer") }}
+</footer>
+
+
+</body>
+
+</html>

@@ -1,0 +1,105 @@
+<div class="pipeline-card">
+
+    <div class="pipeline-header">
+
+        <div>
+
+            <h2>
+                {{ t("recruitment_pipeline") }}
+            </h2>
+
+            <p>
+                {{ t("pipeline_description") }}
+            </p>
+
+        </div>
+
+        <div class="pipeline-total">
+
+            {{ total_candidatos }}
+
+            <span>{{ t("candidates") }}</span>
+
+        </div>
+
+    </div>
+
+    <div class="pipeline-stage">
+
+        <div class="pipeline-info">
+            <span>{{ t("applications") }}</span>
+            <span>{{ total_candidatos }}</span>
+        </div>
+
+        <div class="pipeline-bar">
+            <div class="pipeline-fill fill-100"></div>
+        </div>
+
+    </div>
+
+    <div class="pipeline-stage">
+
+        <div class="pipeline-info">
+            <span>{{ t("screening") }}</span>
+            <span>{{ screening }}</span>
+        </div>
+
+        <div class="pipeline-bar">
+            <div class="pipeline-fill fill-70"></div>
+        </div>
+
+    </div>
+
+    <div class="pipeline-stage">
+
+        <div class="pipeline-info">
+            <span>{{ t("technical_interview") }}</span>
+            <span>{{ entrevista_tecnica }}</span>
+        </div>
+
+        <div class="pipeline-bar">
+            <div class="pipeline-fill fill-50"></div>
+        </div>
+
+    </div>
+
+    <div class="pipeline-stage">
+
+        <div class="pipeline-info">
+            <span>{{ t("client_interview") }}</span>
+            <span>{{ entrevista_cliente }}</span>
+        </div>
+
+        <div class="pipeline-bar">
+            <div class="pipeline-fill fill-35"></div>
+        </div>
+
+    </div>
+
+    <div class="pipeline-stage">
+
+        <div class="pipeline-info">
+            <span>{{ t("offer") }}</span>
+            <span>{{ propostas }}</span>
+        </div>
+
+        <div class="pipeline-bar">
+            <div class="pipeline-fill fill-20"></div>
+        </div>
+
+    </div>
+
+    <div class="pipeline-stage">
+
+        <div class="pipeline-info">
+            <span>{{ t("hired") }}</span>
+            <span>{{ contratados }}</span>
+        </div>
+
+        <div class="pipeline-bar">
+            <div class="pipeline-fill fill-10"></div>
+        </div>
+
+    </div>
+
+</div>

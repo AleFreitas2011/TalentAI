@@ -1,39 +1,78 @@
 from fastapi import FastAPI, Request, Form, Depends, UploadFile, File
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse
 from fastapi.templating import Jinja2Templates
-from starlette.middleware.sessions import SessionMiddleware
-from sqlalchemy.orm import Session
-from typing import List
+from fastapi.staticfiles import StaticFiles
 
+import os
 import tempfile
 import json
-import urllib.parse
-import re
+
+from starlette.middleware.sessions import SessionMiddleware
+from sqlalchemy.orm import Session
+
+from app.middleware.localization import LocalizationMiddleware
+from app.core.jinja import configure_jinja
+from app.core.templates import templates
 
 from .db import SessionLocal, engine, Base
 from .models import Vaga, Usuario, Cliente, Candidato, Envio
-import os
 
 from app.services.cv_parser import extrair_texto_cv
 from app.services.email_extractor import extrair_email
 from app.services.phone_extractor import extrair_telefone
 from app.services.match import calcular_match
 from app.services.ai_match import analisar_cv_com_ia
-from app.services.email_sender import enviar_email
+from app.services.candidate_processor import processar_candidato
+
+from app.routes.buscar_talentos import router as buscar_talentos_router
+from app.routes.clientes import router as clientes_router
+from app.routes.dashboard import router as dashboard_router
+from app.routes.historico import router as historico_router
+from app.routes.vagas import router as vagas_router
+from app.routes.talentos import router as talentos_router
+from app.routes.detalhe_vaga import router as detalhe_vaga_router
+from app.routes.workspace import router as workspace_router
+from app.routes.careers import router as careers_router
+
+
+app = FastAPI()
 
 print("🔥 CODIGO NOVO RODANDO 🔥")
 
 # =========================
 # 🚀 APP
 # =========================
-app = FastAPI()
-app.add_middleware(SessionMiddleware, secret_key="talentai-secret-key")
 
-from fastapi.staticfiles import StaticFiles
-import os
+app.include_router(buscar_talentos_router)
+app.include_router(clientes_router)
+app.include_router(dashboard_router)
+app.include_router(historico_router)
+app.include_router(vagas_router)
+app.include_router(talentos_router)
+app.include_router(detalhe_vaga_router)
+app.include_router(workspace_router)
+app.include_router(careers_router)
+
+# =========================
+# MIDDLEWARES
+# =========================
+
+app.add_middleware(
+    LocalizationMiddleware
+)
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key="talentai-secret-key"
+)
+
+# =========================
+# JINJA / I18N
+# =========================
+
+configure_jinja()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
 TEMPLATES_DIR = os.path.abspath(
     os.path.join(BASE_DIR, "../templates")
 )
@@ -42,16 +81,18 @@ STATIC_DIR = os.path.abspath(
     os.path.join(BASE_DIR, "../static")
 )
 
-templates = Jinja2Templates(directory=TEMPLATES_DIR)
- 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+app.mount(
+    "/uploads",
+    StaticFiles(directory="uploads"),
+    name="uploads"
+)
 
 Base.metadata.create_all(bind=engine)
 
-
-
 # =========================
-# 🔥 BANCO
+#  BANCO
 # =========================
 def get_db():
     db = SessionLocal()
@@ -61,7 +102,7 @@ def get_db():
         db.close()
         
 # =========================
-# 📝 REGISTER
+#  REGISTER
 # =========================
 @app.get("/register", response_class=HTMLResponse)
 def tela_register(request: Request):
@@ -73,7 +114,6 @@ def tela_register(request: Request):
             "request": request
         }
     )
-
 
 @app.post("/register")
 def register(
@@ -116,7 +156,7 @@ def register(
     )
 
 # =========================
-# 🔐 LOGIN
+#  LOGIN
 # =========================
 @app.get("/login", response_class=HTMLResponse)
 def tela_login(request: Request):
@@ -152,756 +192,136 @@ def logout(request: Request):
     return RedirectResponse("/login", status_code=302)
 
 # =========================
-# 🏠 HOME
+#  LANGUAGE
+# =========================
+
+@app.get("/language/{language}")
+def change_language(
+    language: str,
+    request: Request
+):
+
+    allowed_languages = {
+        "pt-BR",
+        "en-US"
+    }
+
+    if language not in allowed_languages:
+        language = "pt-BR"
+
+    request.session["language"] = language
+
+    referer = request.headers.get("referer")
+
+    return RedirectResponse(
+        url=referer or "/",
+        status_code=302
+    )
+
+# =========================
+#  HOME
 # =========================
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request, db: Session = Depends(get_db)):
 
-    print("🔥 HOME CARREGANDO")
+    print(" HOME CARREGANDO")
 
     try:
-        vagas = db.query(Vaga).all()
-    except Exception as e:
-        print("❌ ERRO AO BUSCAR VAGAS:", e)
-        vagas = []
-
-    return templates.TemplateResponse(
-        name="vagas.html",
-        request=request,
-        context={
-            "vagas": vagas
-        }
-    )
-    
-
-@app.get("/nova_vaga", response_class=HTMLResponse)
-def tela_nova_vaga(
-    request: Request,
-    db: Session = Depends(get_db)
-):
-
-    clientes = db.query(Cliente).all()
-
-    return templates.TemplateResponse(
-        request=request,
-        name="nova_vaga.html",
-        context={
-            "request": request,
-            "clientes": clientes
-        }
-    )
-
-@app.post("/nova_vaga")
-def nova_vaga(
-    request: Request,
-    titulo: str = Form(...),
-    cliente_id: int = Form(...),
-    descricao: str = Form(""),
-    palavras_chave: str = Form(""),
-    status: str = Form("Aberta"),
-    db=Depends(get_db)
-):
-    if not request.session.get("user_id"):
-        return RedirectResponse("/login", status_code=302)
-
-    vaga = Vaga(
-        titulo=titulo,
-        cliente_id=cliente_id,
-        descricao=descricao,
-        palavras_chave=palavras_chave,
-        status=status,
-        usuario_id=request.session.get("user_id")
-    )
-
-    db.add(vaga)
-    db.commit()
-    return RedirectResponse("/", status_code=303)
-
-@app.get("/vaga/{vaga_id}")
-def detalhe_vaga(
-    request: Request,
-    vaga_id: int,
-    db: Session = Depends(get_db)
-):
-    print("🔥 ABRINDO DETALHE DA VAGA")
-
-    try:
-        vaga = db.query(Vaga).filter(Vaga.id == vaga_id).first()
-
-        print("✅ VAGA OK")
-
-        if not vaga:
-            return HTMLResponse(
-                "Vaga não encontrada",
-                status_code=404
-            )
-
-        candidatos = (
-            db.query(Candidato)
-            .filter(Candidato.vaga_id == vaga_id)
-            .order_by(Candidato.score.desc())
+        vagas_ativas = (
+            db.query(Vaga)
+            .filter(Vaga.status == "Aberta")
             .all()
         )
 
-        print("✅ CANDIDATOS OK")
-
-        for c in candidatos:
-            print("👤", c.nome_arquivo, c.score)
-
-        return templates.TemplateResponse(
-            request=request,
-            name="vaga_detalhe.html",
-            context={
-                "request": request,
-                "vaga": vaga,
-                "candidatos": candidatos
-            }
+        vagas_fechadas = (
+            db.query(Vaga)
+            .filter(Vaga.status == "Fechada")
+            .all()
         )
-
     except Exception as e:
-        print("❌ ERRO DETALHE VAGA:")
-        print(e)
+        print(" ERRO AO BUSCAR VAGAS:", e)
+        vagas = []
 
-        return HTMLResponse(
-            f"ERRO DETALHE VAGA: {str(e)}",
-            status_code=500
-        )
-        
-        
-# =========================
-# ❌ FECHAR VAGA
-# =========================
-@app.get("/fechar_vaga/{vaga_id}")
-def fechar_vaga(
-    vaga_id: int,
-    db: Session = Depends(get_db)
-):
-
-    vaga = (
-        db.query(Vaga)
-        .filter(Vaga.id == vaga_id)
-        .first()
-    )
-
-    if vaga:
-        vaga.status = "Fechada"
-        db.commit()
-
-    return RedirectResponse(
-        url="/",
-        status_code=303
-    )
-        
-# =========================
-# 🤖 ANALISAR CVS (ROTA FINAL LIMPA)
-# =========================
+    return templates.TemplateResponse(
+    request=request,
+    name="vagas.html",
+    context={
+        "request": request,
+        "vagas_ativas": vagas_ativas,
+        "vagas_fechadas": vagas_fechadas
+    }
+)
+                
 @app.post("/analisar_cvs/{vaga_id}")
 async def analisar_cvs(
     vaga_id: int,
     arquivos: list[UploadFile] = File(...),
     db: Session = Depends(get_db)
 ):
-    import tempfile
-    import json
 
     print("🚀 INICIO ANALISE")
 
-    vaga = db.query(Vaga).filter(Vaga.id == vaga_id).first()
+    vaga = db.query(Vaga).filter(
+        Vaga.id == vaga_id
+    ).first()
 
     if not vaga:
-        return RedirectResponse(url="/", status_code=303)
+        return RedirectResponse(
+            url="/",
+            status_code=303
+        )
+
+    caminho_pasta = "uploads_cvs"
+    os.makedirs(caminho_pasta, exist_ok=True)
 
     for arquivo in arquivos:
+
         try:
+
             print(f"📄 Processando: {arquivo.filename}")
 
             conteudo = await arquivo.read()
 
-            # salvar arquivo temporário
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
-                tmp.write(conteudo)
-                caminho_temp = tmp.name
+            nome_arquivo = arquivo.filename.replace(" ", "_")
 
-            texto = extrair_texto_cv(caminho_temp) or ""
-
-            # 📧 CONTATO
-            email = extrair_email(texto)
-            telefone = extrair_telefone(texto)
-
-            # 🧠 MATCH
-            resultado_match = calcular_match(vaga, texto)
-
-            try:
-                if isinstance(resultado_match, dict):
-                    score_regra = len(resultado_match.get("encontradas", [])) * 10
-                else:
-                    score_regra = float(resultado_match)
-            except:
-                score_regra = 10
-
-            # 🤖 RESUMO COM IA
-            try:
-                resultado_ia = analisar_cv_com_ia(texto, vaga.descricao)
-
-                if isinstance(resultado_ia, dict):
-                    resumo_ia = resultado_ia.get("resumo", "Resumo não gerado")
-                else:
-                    resumo_ia = "Resumo não gerado"
-
-            except Exception as e:
-                print("⚠️ ERRO NA IA:", e)
-
-                # 🔥 FALLBACK INTELIGENTE (NUNCA QUEBRA UX)
-                if texto:
-                  resumo_ia = texto[:300]
-                else:
-                  resumo_ia = "Resumo não disponível"
-
-            # 🔥 NORMALIZA SCORE
-            score_final = max(0, min(score_regra, 100))
-            
-            # 🔒 EVITA DUPLICAÇÃO
-            existe = db.query(Candidato).filter(
-                Candidato.nome_arquivo == arquivo.filename,
-                Candidato.vaga_id == vaga.id
-            ).first()
-
-            if existe:
-              print(f"⚠️ CV já existe, ignorando: {arquivo.filename}")
-              continue
-
-            ## 💾 SALVAR
-            # 💾 SALVAR
-            candidato = Candidato(
-                nome_arquivo=arquivo.filename,
-                texto_cv=texto,
-                email=email,
-                telefone=telefone,
-                score=score_final,
-                resumo=resumo_ia,
-
-                skills_extraidas=", ".join(
-                    resultado_match.get("encontradas", [])
-                ) if isinstance(resultado_match, dict) else "",
-
-                skills_faltantes=", ".join(
-                    resultado_match.get("faltantes", [])
-                ) if isinstance(resultado_match, dict) else "",
-
-                dados_ia=json.dumps(resultado_match)
-                if isinstance(resultado_match, dict)
-                else None,
-
-                vaga_id=vaga.id,
-
-                # 🔥 ORIGEM
-                origem="Upload CV"
+            caminho_cv = os.path.join(
+                caminho_pasta,
+                nome_arquivo
             )
 
-            db.add(candidato)
+            with open(caminho_cv, "wb") as f:
+                f.write(conteudo)
 
-           
+            candidato = processar_candidato(
+                arquivo=arquivo,
+                vaga=vaga,
+                caminho_cv=caminho_cv,
+                db=db
+            )
+
+            if candidato is None:
+                continue
+
         except Exception as e:
-            print("❌ ERRO NO CV:", arquivo.filename)
+
+            print("=" * 60)
+            print(f"❌ Erro ao processar: {arquivo.filename}")
             print(e)
+            print("=" * 60)
+
             continue
 
     db.commit()
 
     print("✅ ANALISE FINALIZADA")
 
-    return RedirectResponse(url=f"/vaga/{vaga.id}", status_code=303)
-#=========================
-# 📲 WHATSAPP
-# =========================
-@app.get("/whatsapp_candidato/{vaga_id}/{candidato_id}")
-def whatsapp_candidato(vaga_id: int, candidato_id: int, db: Session = Depends(get_db)):
-    candidato = db.query(Candidato).filter(Candidato.id == candidato_id).first()
-    vaga = db.query(Vaga).filter(Vaga.id == vaga_id).first()
-
-    if not candidato or not candidato.telefone:
-        return RedirectResponse(f"/vaga/{vaga_id}", status_code=303)
-
-    telefone = re.sub(r"\D", "", candidato.telefone)
-
-    if not telefone.startswith("55"):
-        telefone = "55" + telefone
-
-    mensagem = urllib.parse.quote(f"""
-Olá, tudo bem?
-
-Vi seu perfil e gostaria de falar sobre a vaga:
-
-💼 {vaga.titulo}
-
-Podemos conversar?
-""")
-
-    return RedirectResponse(f"https://wa.me/{telefone}?text={mensagem}", status_code=302)
-
- 
-# =========================
-# 📧 ENVIAR CLIENTE
-# =========================
-@app.post("/enviar_cliente/{vaga_id}")
-def enviar_cliente(
-    vaga_id: int,
-    request: Request,
-    candidatos_ids: List[int] = Form(default=[]),
-    cliente_id: int = Form(...),
-    idioma: str = Form("PT"),
-    db: Session = Depends(get_db)
-):
-    print("🚀 INICIANDO ENVIO")
-
-    try:
-        if not candidatos_ids:
-            return RedirectResponse(url=f"/vaga/{vaga_id}", status_code=303)
-
-        vaga = db.query(Vaga).filter(Vaga.id == vaga_id).first()
-        cliente = db.query(Cliente).filter(Cliente.id == cliente_id).first()
-
-        if not vaga or not cliente:
-            return RedirectResponse(url=f"/vaga/{vaga_id}", status_code=303)
-
-        candidatos = db.query(Candidato).filter(
-            Candidato.id.in_(candidatos_ids)
-        ).all()
-
-        conteudo_email = ""
-
-        # 🔹 CABEÇALHO
-        if idioma == "EN":
-            conteudo_email += f"""Hi {cliente.nome_contato.split()[0] if cliente.nome_contato else "Client"},
-
-Please find below the candidates for the position: {vaga.titulo}
-"""
-        else:
-            conteudo_email += f"""Olá {cliente.nome_contato.split()[0] if cliente.nome_contato else "Cliente"},
-
-Segue abaixo os candidatos para a vaga: {vaga.titulo}
-"""
-
-        # 🔹 CANDIDATOS
-        for c in candidatos:
-            c.etapa = "Enviado"
-
-            if idioma == "EN":
-                conteudo_email += f"""
-
-Candidate: {c.nome_arquivo}
-Match Score: {c.score or 0}%
-
-Summary:
-{c.resumo or "No summary"}
-
-Email: {c.email or "-"}
-Phone: {c.telefone or "-"}
-"""
-            else:
-                conteudo_email += f"""
-
-Candidato: {c.nome_arquivo}
-Aderência: {c.score or 0}%
-
-Resumo:
-{c.resumo or "Sem resumo"}
-
-Email: {c.email or "-"}
-Telefone: {c.telefone or "-"}
-"""
-
-        # 🔹 FINAL
-        if idioma == "EN":
-            conteudo_email += "\n\nHappy to discuss next steps."
-        else:
-            conteudo_email += "\n\nFico à disposição para próximos passos."
-
-        import urllib.parse
-
-        link = f"https://mail.google.com/mail/?view=cm&fs=1&to={cliente.email}&su={urllib.parse.quote('Candidatos - ' + vaga.titulo)}&body={urllib.parse.quote(conteudo_email)}"
-
-        print("🚀 LINK EMAIL:", link)
-
-        return RedirectResponse(link, status_code=302)
-
-        # 📊 SALVAR HISTÓRICO
-        envio = Envio(
-            vaga_id=vaga_id,
-            cliente_id=cliente_id,
-            candidatos=", ".join([c.nome_arquivo for c in candidatos])
-        )
-
-        db.add(envio)
-        db.commit()
-
-        return RedirectResponse(url=f"/vaga/{vaga_id}?sucesso=1", status_code=303)
-
-         
-        conteudo_email = ""
-
-        # 🔹 CABEÇALHO
-        if idioma == "EN":
-            conteudo_email += f"""Hi {cliente.nome_contato.split()[0] if cliente.nome_contato else "Client"},
-
-Please find below the candidates for the position: {vaga.titulo}
-"""
-        else:
-            conteudo_email += f"""Olá {cliente.nome_contato.split()[0] if cliente.nome_contato else "Cliente"},
-
-Segue abaixo os candidatos para a vaga: {vaga.titulo}
-"""
-
-        # 🔹 CANDIDATOS
-        for c in candidatos:
-            c.etapa = "Enviado"
-
-            if idioma == "EN":
-                conteudo_email += f"""
-
-Candidate: {c.nome_arquivo}
-Match Score: {c.score or 0}%
-
-Summary:
-{c.resumo or "No summary"}
-
-Email: {c.email or "-"}
-Phone: {c.telefone or "-"}
-"""
-            else:
-                conteudo_email += f"""
-
-Candidato: {c.nome_arquivo}
-Aderência: {c.score or 0}%
-
-Resumo:
-{c.resumo or "Sem resumo"}
-
-Email: {c.email or "-"}
-Telefone: {c.telefone or "-"}
-"""
-
-        # 🔹 FINAL
-        if idioma == "EN":
-            conteudo_email += "\n\nHappy to discuss next steps."
-        else:
-            conteudo_email += "\n\nFico à disposição para próximos passos."
-
-        import urllib.parse
-
-        link = f"https://mail.google.com/mail/?view=cm&fs=1&to={cliente.email}&su={urllib.parse.quote('Candidatos - ' + vaga.titulo)}&body={urllib.parse.quote(conteudo_email)}"
-
-        print("🚀 LINK EMAIL:", link)
-
-        return RedirectResponse(link, status_code=302)
-
-        # 📊 CONTADOR
-        if not hasattr(vaga, "candidatos_enviados") or vaga.candidatos_enviados is None:
-            vaga.candidatos_enviados = 0
-
-        vaga.candidatos_enviados += len(candidatos)
-
-        envio = Envio(
-            vaga_id=vaga_id,
-            cliente_id=cliente_id,
-            candidatos=", ".join([c.nome_arquivo for c in candidatos])
-        )
-
-        db.add(envio)
-        db.commit()
-
-        return RedirectResponse(url=f"/vaga/{vaga_id}?sucesso=1", status_code=303)
-
-    except Exception as e:
-        print("❌ ERRO NO ENVIO:", e)
-        return RedirectResponse(url=f"/vaga/{vaga_id}", status_code=303)
-    
-    candidatos = db.query(Candidato).filter(
-        Candidato.id.in_(candidatos_ids)
-    ).all()
-
-    lista_candidatos = []
-
-    for c in candidatos:
-        resumo_final = c.resumo or "Sem resumo"
-
-        if idioma == "EN":
-            try:
-                from app.ai.client import client
-
-                prompt = f"Translate this professional CV summary to English:\n\n{resumo_final}"
-
-                response = client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=[{"role": "user", "content": prompt}]
-                )
-
-                resumo_final = response.choices[0].message.content
-
-            except Exception as e:
-                print("⚠️ erro tradução:", e)
-
-        if idioma == "PT":
-            bloco = f"""
-Candidato: {c.nome_arquivo}
-Aderência: {c.score or 0}%
-
-Resumo:
-{resumo_final}
-
-Email: {c.email or "-"}
-Telefone: {c.telefone or "-"}
-"""
-        else:
-            bloco = f"""
-Candidate: {c.nome_arquivo}
-Match Score: {c.score or 0}%
-
-Summary:
-{resumo_final}
-
-Email: {c.email or "-"}
-Phone: {c.telefone or "-"}
-"""
-
-        lista_candidatos.append(bloco)
-
-    if idioma == "PT":
-        conteudo_email = f"""
-Olá {cliente.nome_contato.split()[0] if cliente.nome_contato else "Cliente"},
-
-Segue abaixo os candidatos para a vaga: {vaga.titulo}
-
-{"".join(lista_candidatos)}
-
-Fico à disposição para próximos passos.
-"""
-    else:
-        conteudo_email = f"""
-Hi {cliente.nome_contato.split()[0] if cliente.nome_contato else "Client"},
-
-Please find below shortlisted candidates for the position: {vaga.titulo}
-
-{"".join(lista_candidatos)}
-
-Happy to discuss next steps.
-"""
-
-    return templates.TemplateResponse(
-        "email_preview.html",
-        {
-            "request": request,
-            "vaga": vaga,
-            "cliente": cliente,
-            "email": conteudo_email
-        }
-    )
-    
-@app.get("/novo_cliente", response_class=HTMLResponse)
-def tela_novo_cliente(
-    request: Request
-):
-
-    return templates.TemplateResponse(
-        request=request,
-        name="novo_cliente.html",
-        context={
-            "request": request
-        }
+    return RedirectResponse(
+        url=f"/vaga/{vaga.id}",
+        status_code=303
     )
 
-# =========================
-# 🏢 NOVO CLIENTE (SALVAR)
-# =========================
-@app.post("/novo_cliente")
-def criar_cliente(
-    request: Request,
-    nome_contato: str = Form(...),
-    email: str = Form(...),
-    empresa: str = Form(...),
-    db: Session = Depends(get_db)
-):
-    cliente = Cliente(
-        nome_contato=nome_contato,
-        email=email,
-        empresa=empresa
-    )
-
-    db.add(cliente)
-    db.commit()
-
-    return RedirectResponse(url="/nova_vaga", status_code=303)
-
-# =========================
-# 📊 DASHBOARD
-# =========================
-@app.get("/dashboard", response_class=HTMLResponse)
-def dashboard(
-    request: Request,
-    db: Session = Depends(get_db)
-):
-
-    try:
-        vagas_abertas = db.query(Vaga)\
-            .filter(Vaga.status == "Aberta")\
-            .count()
-            
-        vagas_finalizadas = db.query(Vaga)\
-            .filter(Vaga.status == "Fechada")\
-            .count()  
-
-        total_candidatos = db.query(Candidato).count()
-
-        media_score = db.query(Candidato.score).all()
-
-        media = 0
-
-        if media_score:
-            media = round(
-                sum([c[0] or 0 for c in media_score]) / len(media_score),
-                2
-            )
-
-        print("✅ DASHBOARD OK")
-
-        return templates.TemplateResponse(
-            request=request,
-            name="dashboard.html",
-            context={
-                "request": request,
-                "vagas_abertas": vagas_abertas,
-                "vagas_finalizadas": vagas_finalizadas,
-                "total_candidatos": total_candidatos,
-                "media_score": media
-            }
-        )
-
-    except Exception as e:
-        print("❌ ERRO DASHBOARD:")
-        print(e)
-
-        return HTMLResponse(
-            f"ERRO DASHBOARD: {str(e)}",
-            status_code=500
-        )
-        
-# =========================
-# 📨 HISTÓRICO DE ENVIOS
-# =========================
-@app.get("/historico_envios", response_class=HTMLResponse)
-def historico_envios(
-    request: Request,
-    db: Session = Depends(get_db)
-):
-
-    try:
-
-        envios = (
-            db.query(Envio)
-            .order_by(Envio.id.desc())
-            .all()
-        )
-
-        for envio in envios:
-
-            envio.vaga_nome = "-"
-
-            vaga = (
-                db.query(Vaga)
-                .filter(Vaga.id == envio.vaga_id)
-                .first()
-            )
-
-            if vaga:
-                envio.vaga_nome = vaga.titulo
-
-        return templates.TemplateResponse(
-            request=request,
-            name="historico_envios.html",
-            context={
-                "request": request,
-                "envios": envios
-            }
-        )
-
-    except Exception as e:
-
-        print("❌ ERRO HISTÓRICO:")
-        print(e)
-
-        return HTMLResponse(
-            f"ERRO HISTÓRICO: {str(e)}",
-            status_code=500
-        )
-        
-# =========================
-# 🧠 BANCO DE TALENTOS
-# =========================
-@app.get("/banco_talentos", response_class=HTMLResponse)
-def banco_talentos(
-    request: Request,
-    db: Session = Depends(get_db)
-):
-
-    candidatos = (
-        db.query(Candidato)
-        .order_by(Candidato.data_upload.desc())
-        .all()
-    )
-
-    return templates.TemplateResponse(
-        request=request,
-        name="banco_talentos.html",
-        context={
-            "request": request,
-            "candidatos": candidatos
-        }
-    )
-    
-@app.get("/buscar_talentos", response_class=HTMLResponse)
-def buscar_talentos(
-    request: Request,
-    q: str = "",
-    db: Session = Depends(get_db)
-):
-
-    candidatos = db.query(Candidato).all()
-
-    resultados = []
-
-    if q:
-        termo = q.lower()
-
-        for c in candidatos:
-
-            texto = (c.texto_cv or "").lower()
-            nome = (c.nome_arquivo or "").lower()
-
-            if termo in texto or termo in nome:
-
-                resultados.append({
-                    "nome": c.nome_arquivo,
-                    "match": int(c.score or 0),
-                    "skills_ok": (
-                        (c.skills_extraidas or "").split(",")
-                        if c.skills_extraidas else []
-                    ),
-                    "skills_faltantes": (
-                        (c.skills_faltantes or "").split(",")
-                        if c.skills_faltantes else []
-                    )
-                })
-
-    return templates.TemplateResponse(
-        request=request,
-        name="buscar_talentos.html",
-        context={
-            "request": request,
-            "resultados": resultados,
-            "q": q
-        }
-    )
-    
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+

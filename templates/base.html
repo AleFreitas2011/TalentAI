@@ -1,192 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 
 <head>
-    <meta charset="utf-8">
-    <title>TalentAI</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-        
-        body {
-            margin: 0;
-            font-family: Inter, Arial, sans-serif;
-            background: #f5f7fb;
-            color: #111827;
-        }
-        /* =========================
-       TOPBAR
-    ========================= */
-        
-        .topbar {
-            background: linear-gradient( 90deg, #4f46e5, #6366f1);
-            color: white;
-            padding: 20px 36px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.18);
-        }
-        
-        .brand {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        
-        .brand-sub {
-            font-size: 14px;
-            opacity: 0.85;
-            margin-top: 4px;
-        }
-        /* =========================
-       MENU
-    ========================= */
-        
-        .menu {
-            background: white;
-            padding: 14px 36px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        
-        .menu-btn {
-            text-decoration: none;
-            color: #4b5563;
-            padding: 10px 16px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            background: transparent;
-        }
-        
-        .menu-btn:hover {
-            background: #f3f4f6;
-            color: #111827;
-        }
-        
-        .menu-btn.active {
-            background: #eef2ff;
-            color: #4338ca;
-        }
-        
-        .menu-btn.primary {
-            margin-left: auto;
-            background: #4f46e5;
-            color: white;
-            box-shadow: 0 6px 18px rgba(79, 70, 229, 0.18);
-        }
-        
-        .menu-btn.primary:hover {
-            background: #4338ca;
-        }
-        /* =========================
-       CONTAINER
-    ========================= */
-        
-        .container {
-            max-width: 1280px;
-            margin: 40px auto;
-            padding: 0 24px;
-        }
-        /* =========================
-       BUTTONS
-    ========================= */
-        
-        button {
-            background: #4f46e5;
-            color: white;
-            border: none;
-            padding: 12px 18px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        button:hover {
-            background: #4338ca;
-        }
-        /* =========================
-       FOOTER
-    ========================= */
-        
-        .footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 30px 36px;
-            color: #6b7280;
-            font-size: 14px;
-        }
-        
-        .logout-btn {
-            background: #ef4444;
-            color: white;
-            text-decoration: none;
-            padding: 10px 16px;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-        
-        .logout-btn:hover {
-            background: #dc2626;
-        }
-    </style>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>TalentAI Enterprise</title>
+
+   <link rel="stylesheet"
+      href="{{ url_for('static', path='css/variables.css') }}">
+
+    <link rel="stylesheet"
+      href="{{ url_for('static', path='css/base.css') }}">
+
+    <link rel="stylesheet"
+      href="{{ url_for('static', path='css/typography.css') }}">
+
+    <link rel="stylesheet"
+      href="{{ url_for('static', path='css/layout.css') }}">
+
+    <link rel="stylesheet"
+      href="{{ url_for('static', path='css/buttons.css') }}">
+
+    <link rel="stylesheet"
+      href="{{ url_for('static', path='css/cards.css') }}">
+
+    <link rel="stylesheet"
+      href="{{ url_for('static', path='css/grid.css') }}">
+
+    <link rel="stylesheet"
+      href="{{ url_for('static', path='css/forms.css') }}">
+
+    <link rel="stylesheet"
+      href="{{ url_for('static', path='css/dashboard.css') }}">
+
+    <link rel="stylesheet"
+      href="{{ url_for('static', path='css/talentai_design.css') }}">
 
 </head>
 
 <body>
 
-    <!-- 🔥 TOPO -->
-    <div class="topbar">
-        TalentAI — Smart Hiring
-    </div>
+<div class="app">
 
-    <!-- 💎 MENU (ÚNICO E CORRETO) -->
-    <div class="menu">
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
 
-        <a href="/" class="menu-btn">Painel</a>
-        <a href="/dashboard" class="menu-btn">Dashboard</a>
-        <a href="/banco_talentos" class="menu-btn">Talentos</a>
-        <a href="/buscar_talentos" class="menu-btn">Buscar</a>
-        <a href="/historico_envios" class="menu-btn active">Histórico</a>
-        <a href="/novo_cliente" class="menu-btn primary">+ Cliente</a>
+    {% include "components/sidebar.html" %}
 
-    </div>
+    <!-- =========================
+         MAIN AREA
+    ========================== -->
 
-    <!-- 📦 CONTEÚDO -->
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
+    <div class="main">
 
-    <!-- 🔻 RODAPÉ -->
+        <!-- TOPBAR -->
 
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 30px;">
+        {% include "components/topbar.html" %}
 
-        <div style="font-weight:bold;font-size:20px;">
-            TalentAI 🚀
-        </div>
+        <!-- WORKSPACE -->
 
-        <div>
-            <a href="/logout" style="
-            background:#ef4444;
-            color:white;
-            padding:6px 12px;
-            border-radius:6px;
-            text-decoration:none;
-        ">
-            Sair
-        </a>
-        </div>
+        <main class="workspace">
+
+            {% block content %}
+            {% endblock %}
+
+        </main>
+
+        <!-- FOOTER -->
+
+        {% include "components/footer.html" %}
 
     </div>
+
+</div>
 
 </body>
 

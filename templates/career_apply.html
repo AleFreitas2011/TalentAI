@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="{{ 'pt-BR' if request.session.get('language', 'pt-BR') == 'pt-BR' else 'en' }}">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>{{ t("career_apply") }} · {{ vaga.titulo }} · TalentAI</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #fafaff 0%,
+                    #ffffff 45%,
+                    #faf7ff 100%
+                );
+
+            color: #111827;
+            min-height: 100vh;
+        }
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .public-header {
+            height: 76px;
+            background: rgba(255,255,255,0.96);
+            border-bottom: 1px solid #eeeaf7;
+
+            display: flex;
+            align-items: center;
+        }
+
+        .header-container {
+            width: min(1180px, calc(100% - 40px));
+            margin: auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -1px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #7c3aed,
+                    #ec4899
+                );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+            text-decoration: none;
+        }
+
+        /* =====================================================
+           LANGUAGE
+        ===================================================== */
+
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+
+            padding: 4px;
+        }
+
+        .language-switcher a {
+            display: block;
+            padding: 6px 9px;
+            border-radius: 7px;
+
+            color: #64748b;
+            text-decoration: none;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .language-switcher a.active {
+            background: white;
+            color: #7c3aed;
+
+            box-shadow:
+                0 2px 8px rgba(76,29,149,.10);
+        }
+
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
+        .container {
+            width: min(760px, calc(100% - 40px));
+            margin: auto;
+
+            padding: 48px 0 90px;
+        }
+
+        .back-link {
+            display: inline-block;
+
+            margin-bottom: 30px;
+
+            color: #7c3aed;
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 650;
+        }
+
+        /* =====================================================
+           JOB INFO
+        ===================================================== */
+
+        .job-context {
+            margin-bottom: 28px;
+        }
+
+        .job-label {
+            display: inline-block;
+
+            color: #7c3aed;
+
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+
+            margin-bottom: 10px;
+        }
+
+        .job-context h1 {
+            font-size: 26px;
+            line-height: 1.25;
+            letter-spacing: -.7px;
+        }
+
+        .company {
+            margin-top: 8px;
+
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* =====================================================
+           FORM CARD
+        ===================================================== */
+
+        .application-card {
+            background: white;
+
+            border: 1px solid #ece8f4;
+            border-radius: 20px;
+
+            padding: 34px;
+
+            box-shadow:
+                0 12px 40px rgba(30,41,59,.06);
+        }
+
+        .application-card h2 {
+            font-size: 25px;
+            letter-spacing: -.5px;
+
+            margin-bottom: 8px;
+        }
+
+        .application-description {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.6;
+
+            margin-bottom: 30px;
+        }
+
+        .required-note {
+            color: #94a3b8;
+            font-size: 12px;
+
+            margin-bottom: 24px;
+        }
+
+        /* =====================================================
+           FORM
+        ===================================================== */
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+
+            color: #334155;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border: 1px solid #dfe4ec;
+            border-radius: 10px;
+
+            background: white;
+
+            color: #111827;
+            font-size: 14px;
+
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #a78bfa;
+
+            box-shadow:
+                0 0 0 4px rgba(124,58,237,.08);
+        }
+
+        /* =====================================================
+           FILE
+        ===================================================== */
+
+        .file-upload {
+            position: relative;
+
+            border: 1px dashed #cbd5e1;
+            border-radius: 13px;
+
+            background: #fafafa;
+
+            padding: 25px;
+
+            text-align: center;
+
+            transition: .2s ease;
+        }
+
+        .file-upload:hover {
+            border-color: #a78bfa;
+            background: #fcfaff;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-title {
+            color: #7c3aed;
+
+            font-size: 14px;
+            font-weight: 750;
+        }
+
+        .file-help {
+            margin-top: 6px;
+
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        #fileName {
+            margin-top: 10px;
+
+            color: #475569;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* =====================================================
+           BUTTON
+        ===================================================== */
+
+        .submit-button {
+            width: 100%;
+
+            margin-top: 8px;
+
+            padding: 14px 18px;
+
+            border: 0;
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #7c3aed,
+                    #ec4899
+                );
+
+            color: white;
+
+            font-size: 14px;
+            font-weight: 750;
+
+            cursor: pointer;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+            border-top: 1px solid #eeeaf7;
+
+            padding: 30px 20px;
+
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+
+            .application-card {
+                padding: 25px 20px;
+            }
+
+            .container {
+                padding-top: 32px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="public-header">
+
+    <div class="header-container">
+
+        <a
+            href="/careers"
+            class="brand">
+            TalentAI
+        </a>
+
+        <div class="language-switcher">
+
+            <a
+                href="/language/pt-BR"
+                class="{% if request.session.get('language', 'pt-BR') == 'pt-BR' %}active{% endif %}">
+                PT
+            </a>
+
+            <a
+                href="/language/en-US"
+                class="{% if request.session.get('language') == 'en-US' %}active{% endif %}">
+                EN
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="container">
+
+
+    <!-- BACK -->
+
+    <a
+        href="/careers/job/{{ vaga.id }}"
+        class="back-link">
+        {{ t("career_back_job") }}
+    </a>
+
+
+    <!-- JOB CONTEXT -->
+
+    <div class="job-context">
+
+        <div class="job-label">
+            {{ t("career_job_opportunity") }}
+        </div>
+
+        <h1>
+            {{ vaga.titulo }}
+        </h1>
+
+        {% if vaga.cliente %}
+
+        <div class="company">
+            {{ vaga.cliente.empresa or vaga.cliente.nome_contato }}
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- APPLICATION -->
+
+    <section class="application-card">
+
+        <h2>
+            {{ t("career_apply_title") }}
+        </h2>
+
+        <p class="application-description">
+            {{ t("career_apply_subtitle") }}
+        </p>
+
+        <div class="required-note">
+            {{ t("career_required_fields") }}
+        </div>
+
+
+        <form
+            id="applicationForm"
+            method="post"
+            action="/careers/job/{{ vaga.id }}/apply"
+            enctype="multipart/form-data">
+
+
+            <!-- NAME -->
+
+            <div class="form-group">
+
+                <label for="nome">
+                    {{ t("career_full_name") }} *
+                </label>
+
+                <input
+                    type="text"
+                    id="nome"
+                    name="nome"
+                    required>
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label for="email">
+                    {{ t("career_email") }} *
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required>
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="form-group">
+
+                <label for="telefone">
+                    {{ t("career_phone") }} *
+                </label>
+
+                <input
+                    type="tel"
+                    id="telefone"
+                    name="telefone"
+                    required>
+
+            </div>
+
+
+            <!-- RESUME -->
+
+            <div class="form-group">
+
+                <label>
+                    {{ t("career_resume") }} *
+                </label>
+
+                <div class="file-upload">
+
+                    <input
+                        type="file"
+                        id="curriculo"
+                        name="curriculo"
+                        accept=".pdf,application/pdf"
+                        required>
+
+                    <div class="file-title">
+                        {{ t("career_choose_resume") }}
+                    </div>
+
+                    <div class="file-help">
+                        {{ t("career_resume_help") }}
+                    </div>
+
+                    <div id="fileName">
+                        {{ t("no_files_selected") }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="submit-button">
+
+                {{ t("career_submit_application") }}
+
+            </button>
+
+
+        </form>
+
+    </section>
+
+
+</main>
+
+
+<footer>
+    © TalentAI · {{ t("careers_footer") }}
+</footer>
+
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const fileInput =
+            document.getElementById("curriculo");
+
+        const fileName =
+            document.getElementById("fileName");
+
+        if (!fileInput || !fileName) {
+            return;
+        }
+
+        const noFileSelected =
+            {{ t("no_files_selected") | tojson }};
+
+        fileInput.addEventListener(
+            "change",
+            function () {
+
+                if (
+                    this.files &&
+                    this.files.length > 0
+                ) {
+
+                    fileName.textContent =
+                        this.files[0].name;
+
+                } else {
+
+                    fileName.textContent =
+                        noFileSelected;
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

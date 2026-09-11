@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="padding:40px;">
+
+    <!-- HEADER -->
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:24px;
+        margin-bottom:36px;
+    ">
+
+        <div>
+            <a href="/clientes" style="
+                display:inline-block;
+                margin-bottom:16px;
+                color:#64748b;
+                text-decoration:none;
+                font-size:14px;
+                font-weight:600;
+            ">
+                {{ t("back_to_clients") }}
+            </a>
+
+            <h1 style="
+                margin:0 0 8px 0;
+                font-size:38px;
+                font-weight:800;
+                color:#0f172a;
+            ">
+                {{ cliente.empresa or cliente.nome_contato }}
+            </h1>
+
+            <p style="
+                margin:0;
+                color:#64748b;
+                font-size:16px;
+            ">
+                {{ t("client_jobs") }}
+            </p>
+        </div>
+
+        <a href="/nova_vaga" class="btn btn-primary">
+            {{ t("new_job") }}
+        </a>
+
+    </div>
+
+
+    <!-- CLIENT INFO -->
+    <div style="
+        background:white;
+        border:1px solid #e2e8f0;
+        border-radius:16px;
+        padding:22px 24px;
+        margin-bottom:36px;
+        box-shadow:0 4px 18px rgba(15,23,42,0.04);
+    ">
+
+        <div style="
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+            gap:24px;
+        ">
+
+            <div>
+                <div style="
+                    font-size:12px;
+                    font-weight:700;
+                    color:#94a3b8;
+                    text-transform:uppercase;
+                    letter-spacing:.6px;
+                    margin-bottom:6px;
+                ">
+                    {{ t("contact") }}
+                </div>
+
+                <div style="
+                    font-size:15px;
+                    font-weight:600;
+                    color:#0f172a;
+                ">
+                    {{ cliente.nome_contato or "-" }}
+                </div>
+            </div>
+
+
+            <div>
+                <div style="
+                    font-size:12px;
+                    font-weight:700;
+                    color:#94a3b8;
+                    text-transform:uppercase;
+                    letter-spacing:.6px;
+                    margin-bottom:6px;
+                ">
+                    Email
+                </div>
+
+                <div style="
+                    font-size:15px;
+                    font-weight:600;
+                    color:#0f172a;
+                ">
+                    {{ cliente.email or "-" }}
+                </div>
+            </div>
+
+
+            <div>
+                <div style="
+                    font-size:12px;
+                    font-weight:700;
+                    color:#94a3b8;
+                    text-transform:uppercase;
+                    letter-spacing:.6px;
+                    margin-bottom:6px;
+                ">
+                    {{ t("company") }}
+                </div>
+
+                <div style="
+                    font-size:15px;
+                    font-weight:600;
+                    color:#0f172a;
+                ">
+                    {{ cliente.empresa or "-" }}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- VAGAS -->
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:20px;
+    ">
+
+        <div>
+            <h2 style="
+                margin:0;
+                font-size:26px;
+                color:#0f172a;
+            ">
+                {{ t("jobs") }}
+            </h2>
+
+            <p style="
+                margin:6px 0 0 0;
+                color:#64748b;
+                font-size:14px;
+            ">
+                {{ vagas|length }} {{ t("linked_jobs") }}
+            </p>
+        </div>
+
+    </div>
+
+
+    {% if vagas %}
+
+    <div style="
+        display:grid;
+        grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));
+        gap:20px;
+    ">
+
+        {% for vaga in vagas %}
+
+        <div style="
+            background:white;
+            border:1px solid #e2e8f0;
+            border-radius:16px;
+            padding:24px;
+            box-shadow:0 4px 18px rgba(15,23,42,0.04);
+        ">
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:flex-start;
+                gap:16px;
+                margin-bottom:20px;
+            ">
+
+                <div>
+
+                    <div style="
+                        font-size:12px;
+                        font-weight:700;
+                        color:#64748b;
+                        margin-bottom:8px;
+                    ">
+                        ID #{{ vaga.id }}
+                    </div>
+
+                    <h3 style="
+                        margin:0;
+                        font-size:19px;
+                        line-height:1.35;
+                        color:#0f172a;
+                    ">
+                        {{ vaga.titulo or t("untitled_job") }}
+                    </h3>
+
+                </div>
+
+                <span style="
+                    display:inline-flex;
+                    padding:6px 10px;
+                    border-radius:999px;
+                    background:#f1f5f9;
+                    color:#475569;
+                    font-size:12px;
+                    font-weight:700;
+                    white-space:nowrap;
+                ">
+                    {{ vaga.status or "-" }}
+                </span>
+
+            </div>
+
+
+            <a
+                href="/vaga/{{ vaga.id }}"
+                class="btn btn-primary"
+                style="text-decoration:none;"
+            >
+                {{ t("open_job") }}
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div style="
+        background:white;
+        border:1px solid #e2e8f0;
+        border-radius:16px;
+        padding:60px 30px;
+        text-align:center;
+        box-shadow:0 4px 18px rgba(15,23,42,0.04);
+    ">
+
+        <h3 style="
+            margin:0 0 8px 0;
+            color:#0f172a;
+        ">
+            {{ t("no_linked_jobs") }}
+        </h3>
+
+        <p style="
+            margin:0 0 24px 0;
+            color:#64748b;
+        ">
+            {{ t("no_client_jobs") }}
+        </p>
+
+        <a href="/nova_vaga" class="btn btn-primary">
+            {{ t("new_job") }}
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

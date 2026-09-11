@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="max-width:900px;margin:40px auto;">
+
+    <h1>Editar Comercial</h1>
+
+    <form method="post">
+
+        <label>Taxa do candidato</label><br>
+        <input
+            type="text"
+            name="taxa_candidato"
+            value="{{ candidato.taxa_candidato or '' }}"
+            style="width:100%;padding:10px;margin-bottom:20px;"
+        >
+
+        <label>Disponibilidade</label><br>
+        <input
+            type="text"
+            name="disponibilidade"
+            value="{{ candidato.disponibilidade or '' }}"
+            style="width:100%;padding:10px;margin-bottom:20px;"
+        >
+
+        <label>Cliente Atual</label><br>
+        <input
+            type="text"
+            name="cliente_atual"
+            value="{{ candidato.cliente_atual or '' }}"
+            style="width:100%;padding:10px;margin-bottom:20px;"
+        >
+
+        <label>Projeto Atual</label><br>
+        <input
+            type="text"
+            name="projeto_atual"
+            value="{{ candidato.projeto_atual or '' }}"
+            style="width:100%;padding:10px;margin-bottom:20px;"
+        >
+
+        <label>Modelo de Trabalho</label><br>
+        <input
+            type="text"
+            name="modelo_trabalho"
+            value="{{ candidato.modelo_trabalho or '' }}"
+            style="width:100%;padding:10px;margin-bottom:20px;"
+        >
+
+        <label>Modelo de Contratação</label><br>
+        <input
+            type="text"
+            name="modelo_contratacao"
+            value="{{ candidato.modelo_contratacao or '' }}"
+            style="width:100%;padding:10px;margin-bottom:20px;"
+        >
+
+        <button
+            type="submit"
+            style="
+                background:#7c3aed;
+                color:white;
+                border:none;
+                padding:12px 18px;
+                border-radius:10px;
+                cursor:pointer;
+            "
+        >
+            Salvar
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

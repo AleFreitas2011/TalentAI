@@ -1,98 +1,528 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
 
-<h1 style="
-    background: linear-gradient(90deg, #2563eb, #7c3aed);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-">
-    Banco de Talentos 💎
-</h1>
+{% block content %}
 
-<br>
+<!-- ==========================================
+HEADER
+========================================== -->
 
-<form action="/upload_cv_banco" method="post" enctype="multipart/form-data">
+<div style="margin-bottom:40px;">
 
-    <input type="file" name="cvs" multiple accept=".pdf,.docx">
-
-    <select name="idioma">
-        <option value="PT">Português</option>
-        <option value="EN">Inglês</option>
-    </select>
-
-    <button type="submit" style="
-        background:#2563eb;
-        color:white;
-        padding:8px 14px;
-        border:none;
-        border-radius:6px;
-        cursor:pointer;
+    <h1 style="
+        font-size:42px;
+        font-weight:800;
+        color:#111827;
+        margin-bottom:8px;
+        letter-spacing:-1px;
     ">
-        + Adicionar CV
-    </button>
-
-</form>
-
-<br><br> {% if candidatos %} {% for c in candidatos %}
-
-<div style="
-        background:white;
-        padding:20px;
-        border-radius:12px;
-        margin-bottom:15px;
-        box-shadow:0 6px 18px rgba(0,0,0,0.05);
-    ">
-
-    <h3 style="margin-bottom:5px;">
-        {{ c.nome_arquivo }}
-    </h3>
-
-    <p style="color:#6b7280;">
-        📧 {{ c.email or "Email não encontrado" }}
-    </p>
-
-    <p style="color:#6b7280;">
-        📱 {{ c.telefone or "Telefone não encontrado" }}
-    </p>
-
-    <!-- 🔥 BOTÃO WHATSAPP -->
-    {% if c.telefone %}
-    <a href="https://wa.me/{{ c.telefone }}?text=Oi%20vi%20seu%20perfil%20e%20tenho%20uma%20oportunidade%20pra%20você" target="_blank" style="
-            display:inline-block;
-            margin-top:10px;
-            background:#25D366;
-            color:white;
-            padding:8px 12px;
-            border-radius:6px;
-            text-decoration:none;
-            font-size:14px;
-           ">
-            📲 Falar no WhatsApp
-        </a> {% endif %}
+        {{ t("talent_pool") }}
+    </h1>
 
     <p style="
-            font-weight:bold;
-            color:#2563eb;
-            font-size:18px;
-            margin-top:10px;
-        ">
-        📊 {{ c.score if c.score else "0" }}%
-    </p>
-
-    <p style="
-            color:#374151;
-            font-size:14px;
-        ">
-        🧠 {{ c.skills_extraidas or "Skills não identificadas" }}
+        font-size:18px;
+        color:#475569;
+        max-width:900px;
+        line-height:1.7;
+    ">
+        {{ t("talent_pool_description") }}
     </p>
 
 </div>
 
-{% endfor %} {% else %}
 
-<p>Nenhum talento encontrado.</p>
+<!-- ==========================================
+UPLOAD CARD
+========================================== -->
+
+<div style="
+    background:white;
+    border-radius:24px;
+    padding:32px;
+    margin-bottom:40px;
+    border:1px solid #e8ecff;
+    box-shadow:0 12px 35px rgba(15,23,42,.06);
+">
+
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:28px;
+        flex-wrap:wrap;
+        gap:20px;
+    ">
+
+        <div>
+
+            <div style="
+                font-size:26px;
+                font-weight:700;
+                color:#111827;
+            ">
+                {{ t("upload_resumes") }}
+            </div>
+
+            <div style="
+                margin-top:8px;
+                color:#64748b;
+                font-size:16px;
+            ">
+                {{ t("upload_resumes_description") }}
+            </div>
+
+        </div>
+
+    </div>
+
+    <form
+        action="/upload_cv_banco"
+        method="post"
+        enctype="multipart/form-data"
+    >
+
+        <div style="
+            display:flex;
+            gap:18px;
+            flex-wrap:wrap;
+            align-items:center;
+        ">
+
+            <!-- CUSTOM FILE SELECTOR -->
+
+            <div style="
+                flex:1;
+                min-width:350px;
+                display:flex;
+                align-items:center;
+                gap:14px;
+                padding:10px;
+                min-height:58px;
+                border-radius:16px;
+                border:1px solid #dbe4ff;
+                background:#f8fafc;
+            ">
+
+                <input
+                    id="talentai-cv-upload"
+                    type="file"
+                    name="cvs"
+                    multiple
+                    required
+                    style="
+                        position:absolute;
+                        width:1px;
+                        height:1px;
+                        opacity:0;
+                        overflow:hidden;
+                        pointer-events:none;
+                    "
+                >
+
+                <label
+                    for="talentai-cv-upload"
+                    style="
+                        display:inline-flex;
+                        align-items:center;
+                        justify-content:center;
+                        padding:10px 16px;
+                        border-radius:10px;
+                        border:1px solid #cbd5e1;
+                        background:white;
+                        color:#111827;
+                        font-size:14px;
+                        font-weight:600;
+                        cursor:pointer;
+                        white-space:nowrap;
+                    "
+                >
+                    {{ t("choose_files") }}
+                </label>
+
+                <span
+                    id="talentai-file-status"
+                    data-empty-text="{{ t('no_files_selected') }}"
+                    data-selected-text="{{ t('files_selected') }}"
+                    style="
+                        color:#475569;
+                        font-size:15px;
+                        overflow:hidden;
+                        text-overflow:ellipsis;
+                        white-space:nowrap;
+                    "
+                >
+                    {{ t("no_files_selected") }}
+                </span>
+
+            </div>
+
+            <select
+                name="idioma"
+                style="
+                    width:220px;
+                    padding:18px;
+                    border-radius:16px;
+                    font-size:15px;
+                "
+            >
+                <option value="PT">
+                     Português
+                </option>
+
+                <option value="EN">
+                     English
+                </option>
+
+            </select>
+
+            <button
+                class="btn-primary"
+                style="
+                    padding:18px 28px;
+                    font-size:16px;
+                    font-weight:700;
+                "
+            >
+                {{ t("upload_resumes") }}
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- ==========================================
+TALENT GRID
+========================================== -->
+
+<div style="
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(430px,1fr));
+    gap:24px;
+">
+
+{% if candidatos %}
+
+{% for c in candidatos %}
+
+<div style="
+    background:white;
+    border-radius:24px;
+    border:1px solid #e8ecff;
+    box-shadow:0 12px 35px rgba(15,23,42,.06);
+    overflow:hidden;
+    transition:.25s;
+">
+
+    <!-- CABEÇALHO -->
+
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        padding:28px;
+        border-bottom:1px solid #edf2f7;
+    ">
+
+        <div style="flex:1;">
+
+            <div style="
+                font-size:28px;
+                font-weight:800;
+                color:#111827;
+                margin-bottom:8px;
+                line-height:1.3;
+            ">
+
+                 {{ c.nome_arquivo.replace('_',' ').replace('.pdf','').replace('.docx','') }}
+
+            </div>
+
+            <div style="
+                color:#6366f1;
+                font-size:18px;
+                font-weight:700;
+            ">
+
+                {{ t("professional_profile") }}
+
+            </div>
+
+        </div>
+
+
+        <!-- SCORE -->
+
+        <div style="
+            width:100px;
+            height:100px;
+            border-radius:50%;
+            background:linear-gradient(135deg,#4f46e5,#7c3aed);
+            color:white;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            flex-shrink:0;
+        ">
+
+            <div style="
+                font-size:30px;
+                font-weight:800;
+                line-height:1;
+            ">
+                {{ c.score|int if c.score else 0 }}
+            </div>
+
+            <div style="
+                font-size:11px;
+                margin-top:6px;
+                letter-spacing:1px;
+            ">
+                {{ t("ai_match") }}
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONTEÚDO -->
+
+    <div style="padding:28px;">
+
+
+        <!-- RESUMO IA -->
+
+        <div style="
+            color:#4f46e5;
+            font-size:15px;
+            font-weight:700;
+            margin-bottom:12px;
+        ">
+
+             {{ t("ai_professional_summary") }}
+
+        </div>
+
+        <div style="
+            color:#334155;
+            font-size:17px;
+            line-height:1.8;
+            margin-bottom:28px;
+            min-height:95px;
+        ">
+
+            {{ c.resumo or t("professional_summary_not_available") }}
+
+        </div>
+
+
+        <!-- SKILLS -->
+
+        <div style="
+            color:#4f46e5;
+            font-size:15px;
+            font-weight:700;
+            margin-bottom:12px;
+        ">
+
+             {{ t("skills") }}
+
+        </div>
+
+        <div style="
+            margin-bottom:30px;
+        ">
+
+            {% if c.skills_extraidas %}
+
+                {% for skill in c.skills_extraidas.split(",") %}
+
+                    <span style="
+                        display:inline-block;
+                        background:#eef2ff;
+                        color:#4338ca;
+                        padding:10px 16px;
+                        border-radius:999px;
+                        margin:5px;
+                        font-size:14px;
+                        font-weight:600;
+                    ">
+
+                        {{ skill.strip() }}
+
+                    </span>
+
+                {% endfor %}
+
+            {% else %}
+
+                <span style="color:#94a3b8;">
+                    {{ t("skills_not_identified") }}
+                </span>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- CONTATOS -->
+
+        <div style="
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:24px;
+            margin-bottom:30px;
+        ">
+
+            <div>
+
+                <div style="
+                    color:#64748b;
+                    font-size:13px;
+                    margin-bottom:6px;
+                    font-weight:600;
+                ">
+                    {{ t("email")|upper }}
+                </div>
+
+                <div style="
+                    color:#111827;
+                    font-size:16px;
+                    font-weight:700;
+                ">
+
+                    {{ c.email or "-" }}
+
+                </div>
+
+            </div>
+
+            <div>
+
+                <div style="
+                    color:#64748b;
+                    font-size:13px;
+                    margin-bottom:6px;
+                    font-weight:600;
+                ">
+                    {{ t("phone")|upper }}
+                </div>
+
+                <div style="
+                    color:#111827;
+                    font-size:16px;
+                    font-weight:700;
+                ">
+
+                    {{ c.telefone or "-" }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- BOTÕES -->
+
+        <div style="
+            display:flex;
+            gap:16px;
+            flex-wrap:wrap;
+        ">
+
+            <a
+                href="/consultor/{{ c.id }}"
+                target="_blank"
+                class="btn-primary"
+                style="
+                    flex:1;
+                    text-align:center;
+                "
+            >
+
+                Consultant 360°
+
+            </a>
+
+            {% if c.telefone %}
+
+            <a
+                href="https://wa.me/{{ c.telefone }}"
+                target="_blank"
+                style="
+                    flex:1;
+                    text-align:center;
+                    background:#22c55e;
+                    color:white;
+                    padding:16px;
+                    border-radius:14px;
+                    text-decoration:none;
+                    font-weight:700;
+                "
+            >
+
+                 WhatsApp
+
+            </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<p>{{ t("no_talent_found") }}</p>
 
 {% endif %}
 
 <br>
 
-<a href="/" style="text-decoration:none;">← Voltar</a> {% endblock %}
+<a href="/" style="text-decoration:none;">
+    {{ t("back") }}
+</a>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const fileInput = document.getElementById("talentai-cv-upload");
+    const fileStatus = document.getElementById("talentai-file-status");
+
+    if (!fileInput || !fileStatus) {
+        return;
+    }
+
+    const emptyText = fileStatus.dataset.emptyText;
+    const selectedText = fileStatus.dataset.selectedText;
+
+    fileInput.addEventListener("change", function () {
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            fileStatus.textContent = emptyText;
+            return;
+        }
+
+        if (fileInput.files.length === 1) {
+            fileStatus.textContent = fileInput.files[0].name;
+            return;
+        }
+
+        fileStatus.textContent =
+            `${fileInput.files.length} ${selectedText}`;
+
+    });
+
+});
+</script>
+
+{% endblock %}

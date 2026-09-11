@@ -1,150 +1,193 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Buscar Talentos</title>
+{% block content %}
 
-    <style>
-        body {
-            font-family: Arial;
-            background: #f4f6f9;
-            padding: 30px;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: auto;
-        }
-        
-        .nav {
-            margin-bottom: 20px;
-        }
-        
-        .nav a {
-            text-decoration: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-right: 10px;
-            font-size: 14px;
-        }
-        
-        .btn-back {
-            background: #e5e7eb;
-            color: #111827;
-        }
-        
-        .btn-main {
-            background: #2563eb;
-            color: white;
-        }
-        
-        input {
-            padding: 10px;
-            width: 60%;
-            font-size: 16px;
-        }
-        
-        button {
-            padding: 10px 15px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 6px;
-        }
-    </style>
+<h1 style="
+    background: linear-gradient(90deg, #2563eb, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+">
+    {{ t("search_talent") }}
+</h1>
 
-</head>
+<p style="
+    color:#334155;
+    margin-top:8px;
+    margin-bottom:25px;
+    font-size:16px;
+    font-weight:500;
+">
+    {{ t("search_talent_description") }}
+</p>
 
-<body>
+<form method="get"
+      action="/buscar_talentos"
+      style="
+        background:white;
+        padding:20px;
+        border-radius:20px;
+        box-shadow:0 10px 30px rgba(0,0,0,0.05);
+        margin-bottom:30px;
+">
 
-    <div class="container">
+    <div style="
+        display:flex;
+        gap:12px;
+        align-items:center;
+        flex-wrap:wrap;
+    ">
 
-        <!-- 🔥 NAVEGAÇÃO -->
-        <div class="nav">
-            <a href="/" class="btn-back">← Painel</a>
-            <a href="/banco_talentos" class="btn-main">🧠 Banco de Talentos</a>
-        </div>
+        <input
+            type="text"
+            name="q"
+            value="{{ q or '' }}"
+            placeholder="Oracle, SAP, Python, React, OCI..."
+            style="
+                flex:1;
+                min-width:300px;
+                padding:12px;
+                border:1px solid #dbe3f0;
+                border-radius:12px;
+            "
+        >
 
-        <h1>Buscar no Banco de Talentos</h1>
-
-        <form method="get" action="/buscar_talentos">
-            <input type="text" name="q" placeholder="Ex: python, sap, aws" value="{{ q or '' }}">
-            <button type="submit">Buscar</button>
-        </form>
-
-        <!-- 🔥 RESULTADOS -->
-        {% if resultados and resultados|length > 0 %} {% for r in resultados %}
-
-        <div style="
-            background:white;
-            padding:20px;
-            border-radius:12px;
-            margin-top:20px;
-            box-shadow:0 8px 25px rgba(0,0,0,0.08);
-        ">
-
-            <h2 style="margin-bottom:5px;">{{ r.nome }}</h2>
-
-            <p>
-                <b style="font-size:18px;">🎯 Match:</b>
-                <span style="font-size:18px;font-weight:bold;">{{ r.match }}%</span> {% if r.match >= 75 %}
-                <span style="color:#16a34a;font-weight:bold;">🟢 Forte aderência</span> {% elif r.match >= 50 %}
-                <span style="color:#f59e0b;font-weight:bold;">🟡 Média aderência</span> {% else %}
-                <span style="color:#dc2626;font-weight:bold;">🔴 Baixa aderência</span> {% endif %}
-            </p>
-
-            <!-- ✅ SKILLS OK -->
-            {% if r.skills_ok %}
-            <div style="margin-top:10px;">
-                <b style="color:#16a34a;">✅ Encontradas:</b><br> {% for s in r.skills_ok %}
-                <span style="
-                    background:#dcfce7;
-                    color:#166534;
-                    padding:6px 12px;
-                    border-radius:999px;
-                    font-size:12px;
-                    margin-right:5px;
-                    display:inline-block;
-                    margin-top:5px;
-                ">
-                    {{ s }}
-                </span> {% endfor %}
-            </div>
-            {% endif %}
-
-            <!-- ❌ FALTANTES -->
-            {% if r.skills_faltantes %}
-            <div style="margin-top:10px;">
-                <b style="color:#dc2626;">❌ Faltantes:</b><br> {% for s in r.skills_faltantes %}
-                <span style="
-                    background:#fee2e2;
-                    color:#991b1b;
-                    padding:6px 12px;
-                    border-radius:999px;
-                    font-size:12px;
-                    margin-right:5px;
-                    display:inline-block;
-                    margin-top:5px;
-                ">
-                    {{ s }}
-                </span> {% endfor %}
-            </div>
-            {% endif %}
-
-        </div>
-
-        {% endfor %} {% else %}
-
-        <p style="margin-top:20px;color:#ef4444;">
-            ❌ Nenhum candidato encontrado para essas skills
-        </p>
-
-        {% endif %}
+        <button
+            type="submit"
+            style="
+                background:linear-gradient(90deg,#7c3aed,#ec4899);
+                color:white;
+                padding:12px 22px;
+                border:none;
+                border-radius:12px;
+                cursor:pointer;
+                font-weight:600;
+                box-shadow:0 8px 20px rgba(124,58,237,0.25);
+            "
+        >
+            {{ t("search_button") }}
+        </button>
 
     </div>
 
-</body>
+</form>
 
-</html>
+{% if resultados and resultados|length > 0 %}
+
+    {% for r in resultados %}
+
+    <div style="
+        background:white;
+        padding:22px;
+        border-radius:16px;
+        margin-bottom:16px;
+        box-shadow:0 6px 18px rgba(0,0,0,0.05);
+    ">
+
+        <h3 style="
+            margin:0 0 16px 0;
+            color:#1e293b;
+            font-size:18px;
+        ">
+            {{ r.nome }}
+        </h3>
+
+        {% if r.principais_conhecimentos %}
+
+        <div>
+
+            <strong style="
+                color:#475569;
+                font-size:14px;
+            ">
+                {{ t("skills") }}
+            </strong>
+
+            <div style="
+                margin-top:10px;
+                display:flex;
+                flex-wrap:wrap;
+                gap:7px;
+            ">
+
+                {% for skill in r.principais_conhecimentos %}
+
+                <span style="
+                    display:inline-block;
+                    background:#f3e8ff;
+                    color:#7e22ce;
+                    padding:6px 11px;
+                    border-radius:999px;
+                    font-size:12px;
+                    font-weight:600;
+                ">
+                    {{ skill }}
+                </span>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+        <div style="
+            margin-top:20px;
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        ">
+
+            <a href="/visualizar_cv/{{ r.id }}"
+               target="_blank"
+               style="
+                    display:inline-block;
+                    background:#4f46e5;
+                    color:white;
+                    padding:10px 14px;
+                    border-radius:8px;
+                    text-decoration:none;
+                    font-size:14px;
+                    font-weight:600;
+               ">
+                {{ t("view_resume") }}
+            </a>
+
+            <a href="/consultor/{{ r.id }}"
+               style="
+                    display:inline-block;
+                    background:linear-gradient(90deg,#7c3aed,#ec4899);
+                    color:white;
+                    padding:10px 14px;
+                    border-radius:8px;
+                    text-decoration:none;
+                    font-size:14px;
+                    font-weight:600;
+               ">
+                Consultant 360
+            </a>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+<div style="
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 6px 18px rgba(0,0,0,0.05);
+    color:#64748b;
+">
+
+    {{ t("no_talent_found") }}
+
+</div>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,155 @@
+<div id="talia" class="talia-card">
+
+    <!-- HEADER -->
+
+    <div class="talia-header">
+
+        <div>
+
+            <span class="talia-title">
+                TALIA
+            </span>
+
+            <div class="talia-subtitle">
+                {{ t("executive_recruitment_intelligence") }}
+            </div>
+
+        </div>
+
+        <div class="talia-status">
+
+            <span class="status-dot"></span>
+
+            {{ t("ai_active") }}
+
+        </div>
+
+    </div>
+
+    <!-- BRIEF -->
+
+    <div class="talia-brief">
+
+        <div class="brief-title">
+            {{ talia.executive_title }}
+        </div>
+
+        <div class="brief-greeting">
+            {{ talia.greeting }}
+        </div>
+
+        <div class="brief-summary">
+            {{ talia.summary }}
+        </div>
+
+    </div>
+
+    <!-- KPIs -->
+
+    <div class="talia-kpis">
+
+        <div class="talia-kpi">
+
+            <div class="kpi-value">
+                {{ total_vagas }}
+            </div>
+
+            <div class="kpi-label">
+                {{ t("active_jobs") }}
+            </div>
+
+        </div>
+
+        <div class="talia-kpi">
+
+            <div class="kpi-value">
+                {{ total_candidatos }}
+            </div>
+
+            <div class="kpi-label">
+                {{ t("candidates") }}
+            </div>
+
+        </div>
+
+        <div class="talia-kpi">
+
+            <div class="kpi-value">
+                {{ matches_90 }}
+            </div>
+
+            <div class="kpi-label">
+                {{ t("top_matches") }}
+            </div>
+
+        </div>
+
+        <div class="talia-kpi">
+
+            <div class="kpi-value">
+                {{ media_match }}%
+            </div>
+
+            <div class="kpi-label">
+                {{ t("avg_match") }}
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- INSIGHTS -->
+
+    <div class="talia-section-title">
+        {{ t("executive_insights") }}
+    </div>
+
+    <div class="talia-insights">
+
+        {% for insight in talia.insights %}
+
+        <div class="insight-card">
+
+            <div class="insight-title">
+                {{ insight.title }}
+            </div>
+
+            <div class="insight-description">
+                {{ insight.description }}
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- RECOMMENDATION -->
+
+    <div class="talia-section-title">
+        {{ t("ai_recommendation") }}
+    </div>
+
+    <div class="recommendation-box">
+        {{ talia.recommendation }}
+    </div>
+
+    <!-- ACTIONS -->
+
+    <div class="talia-actions">
+
+        <a
+            href="/buscar_talentos"
+            class="btn-talia-primary">
+            {{ t("search_talent") }}
+        </a>
+
+        <a
+            href="/banco_talentos"
+            class="btn-talia-secondary">
+            {{ t("view_talent_pool") }}
+        </a>
+
+    </div>
+
+</div>

@@ -1,30 +1,37 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
+
+{% block content %}
 
 <div style="padding:40px;">
 
     <div style="
         margin-bottom:32px;
     ">
+
         <h1 style="
-            font-size:30px;
-            font-weight:700;
-            color:#111827;
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom:8px;
         ">
-            Histórico de Envios
+            {{ t("submission_history") }}
         </h1>
 
         <p style="
-            color:#6b7280;
-            font-size:15px;
+            color:#334155;
+            font-size:16px;
+            font-weight:500;
         ">
-            Controle de candidatos enviados para clientes
+            {{ t("submission_history_description") }}
         </p>
+
     </div>
 
-    {% if envios %} {% for e in envios %}
+    {% if envios %}
 
-    <div style="
+        {% for e in envios %}
+
+        <div style="
             background:white;
             border:1px solid #e5e7eb;
             border-radius:18px;
@@ -33,34 +40,34 @@
             box-shadow:0 4px 20px rgba(0,0,0,0.04);
         ">
 
-        <div style="
+            <div style="
                 display:flex;
                 justify-content:space-between;
                 align-items:flex-start;
                 margin-bottom:18px;
             ">
 
-            <div>
+                <div>
 
-                <div style="
+                    <div style="
                         font-size:18px;
                         font-weight:700;
                         color:#111827;
                         margin-bottom:6px;
                     ">
-                    {{ e.vaga_nome }}
-                </div>
+                        {{ e.vaga_nome }}
+                    </div>
 
-                <div style="
+                    <div style="
                         color:#6b7280;
                         font-size:14px;
                     ">
-                    {{ e.cliente.empresa if e.cliente else "-" }}
+                        {{ e.cliente.empresa if e.cliente else "-" }}
+                    </div>
+
                 </div>
 
-            </div>
-
-            <div style="
+                <div style="
                     background:#f3f4f6;
                     color:#374151;
                     padding:8px 14px;
@@ -68,27 +75,27 @@
                     font-size:13px;
                     font-weight:600;
                 ">
-                #{{ e.id }}
+                    #{{ e.id }}
+                </div>
+
             </div>
 
-        </div>
-
-        <div style="
+            <div style="
                 font-size:13px;
                 color:#9ca3af;
                 margin-bottom:18px;
             ">
-            {{ e.data }}
-        </div>
+                {{ e.data }}
+            </div>
 
-        <div style="
+            <div style="
                 background:#f9fafb;
                 border:1px solid #f3f4f6;
                 border-radius:14px;
                 padding:18px;
             ">
 
-            <div style="
+                <div style="
                     font-size:13px;
                     font-weight:600;
                     color:#6b7280;
@@ -96,24 +103,26 @@
                     text-transform:uppercase;
                     letter-spacing:0.5px;
                 ">
-                Candidatos enviados
-            </div>
+                    {{ t("submitted_candidates") }}
+                </div>
 
-            <div style="
+                <div style="
                     color:#111827;
                     font-size:14px;
                     line-height:1.7;
                 ">
-                {{ e.candidatos }}
+                    {{ e.candidatos }}
+                </div>
+
             </div>
 
         </div>
 
-    </div>
+        {% endfor %}
 
-    {% endfor %} {% else %}
+    {% else %}
 
-    <div style="
+        <div style="
             background:white;
             border:1px solid #e5e7eb;
             border-radius:18px;
@@ -122,8 +131,8 @@
             color:#6b7280;
             box-shadow:0 4px 20px rgba(0,0,0,0.04);
         ">
-        Nenhum envio realizado ainda.
-    </div>
+            {{ t("no_submissions_yet") }}
+        </div>
 
     {% endif %}
 

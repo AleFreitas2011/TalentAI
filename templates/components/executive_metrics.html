@@ -1,0 +1,123 @@
+<div class="dashboard-metrics">
+
+    <div class="grid grid-4">
+
+        <!-- Active Jobs -->
+        <div class="metric-card">
+
+            <div class="metric-header">
+                <div>
+
+                    <div class="metric-title">
+                        {{ t("active_jobs") }}
+                    </div>
+
+                    <div class="metric-subtitle">
+                        {{ t("open_positions") }}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="metric-value">
+                {{ total_vagas }}
+            </div>
+
+            <div class="metric-footer">
+
+                <span class="metric-trend">
+                    +{{ vagas_novas }}
+                </span>
+
+                <span>
+                    {{ t("new_today") }}
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- Talent Pool -->
+        <div class="metric-card">
+
+            <div class="metric-header">
+                <div>
+
+                    <div class="metric-title">
+                        {{ t("talent_pool") }}
+                    </div>
+
+                    <div class="metric-subtitle">
+                        {{ t("internal_database") }}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="metric-value">
+                {{ total_candidatos }}
+            </div>
+
+            <div class="metric-footer">
+                {{ t("total_registered_candidates") }}
+            </div>
+
+        </div>
+
+        <!-- Interviews -->
+        <div class="metric-card">
+
+            <div class="metric-header">
+                <div>
+
+                    <div class="metric-title">
+                        {{ t("interviews") }}
+                    </div>
+
+                    <div class="metric-subtitle">
+                        {{ t("scheduled_today") }}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="metric-value">
+                {{ entrevistas_hoje }}
+            </div>
+
+            <div class="metric-footer">
+                {{ t("recruitment_agenda") }}
+            </div>
+
+        </div>
+
+        <!-- Match -->
+        <div class="metric-card">
+
+            <div class="metric-header">
+                <div>
+
+                    <div class="metric-title">
+                        {{ t("match_90") }}
+                    </div>
+
+                    <div class="metric-subtitle">
+                        {{ t("ready_to_submit") }}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="metric-value">
+                {{ matches_90 }}
+            </div>
+
+            <div class="metric-footer">
+                {{ t("high_confidence_candidates") }}
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
