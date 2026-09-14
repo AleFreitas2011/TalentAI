@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 
 from sqlalchemy.orm import Session
 
@@ -39,6 +39,12 @@ def dashboard(
     request: Request,
     db: Session = Depends(get_db)
 ):
+
+    if not request.session.get("user_id"):
+        return RedirectResponse(
+            url="/login",
+            status_code=302
+        )
 
     try:
 
