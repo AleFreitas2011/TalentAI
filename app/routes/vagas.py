@@ -40,6 +40,12 @@ def listar_vagas(
     db: Session = Depends(get_db)
 ):
 
+    if not request.session.get("user_id"):
+        return RedirectResponse(
+            "/login",
+            status_code=302
+        )
+
     vagas_ativas = (
         db.query(Vaga)
         .filter(Vaga.status == "Aberta")
