@@ -39,6 +39,12 @@ def listar_clientes(
     db: Session = Depends(get_db)
 ):
 
+    if not request.session.get("user_id"):
+        return RedirectResponse(
+            url="/login",
+            status_code=302
+        )
+
     clientes = (
         db.query(Cliente)
         .order_by(Cliente.id.desc())
